@@ -1,6 +1,6 @@
 import { FlatList } from "react-native";
 import ListItem from "./ListItem";
-
+import { listContainerStyles } from "../../styles/list/listContainerStyles";
 
   const DATA = [
     {
@@ -21,10 +21,11 @@ import ListItem from "./ListItem";
 const ListContainer = () => {
 
 return (
-<FlatList
+    <FlatList
         data={DATA}
-        renderItem={({item}) => <ListItem message={item.title} />}
+        renderItem={({item}) => <ListItem title={item.title} />}
         keyExtractor={item => item.id}
+        style={listContainerStyles.container}
       />      
       )
 
