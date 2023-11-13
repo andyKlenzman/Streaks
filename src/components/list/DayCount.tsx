@@ -3,12 +3,8 @@ import { dayCountStyles } from "../../styles/list/dayCountStyles";
 
 
 
-const DayCount = () => {
-return (
-    <Text style={dayCountStyles.text}>80</Text>
-
-)
-
+const DayCount = (count: number) => {
+return 
 };
 
 export default DayCount

@@ -1,29 +1,18 @@
 import { FlatList } from "react-native";
 import ListItem from "./ListItem";
 import { listContainerStyles } from "../../styles/list/listContainerStyles";
-
-  const DATA = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ];
+import { useAppDispatch, useAppSelector } from "../../../hooks";
+import { selectAllStreaks } from "../../store/selectors/selectAllStreaks";
+  
 
 
 const ListContainer = () => {
+    const streaks = useAppSelector(selectAllStreaks)
 
 return (
     <FlatList
-        data={DATA}
-        renderItem={({item}) => <ListItem title={item.title} />}
+        data={streaks}
+        renderItem={({item}) => <ListItem {...item}/>}
         keyExtractor={item => item.id}
         style={listContainerStyles.container}
       />      
