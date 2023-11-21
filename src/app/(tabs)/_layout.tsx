@@ -5,8 +5,6 @@ import Tabs from "expo-router/tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const TabsLayout = () => {
-
-
     return (
    <Provider store={store}>
     <Tabs screenOptions={{ headerShown: false }}>
