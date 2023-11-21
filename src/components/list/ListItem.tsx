@@ -3,6 +3,8 @@ import ListButton from "./ListButton";
 import { listItemStyles } from "../../styles/list/listItemStyles";
 import { dayCountStyles } from "../../styles/list/dayCountStyles";
 import { StreakStatus } from "../../shared/interfaces/streakStatus.interface";
+
+
 interface ListItemProps {
     title: string;
     count: number
@@ -11,7 +13,6 @@ interface ListItemProps {
   
 
 const ListItem = ({ title, count, status}: ListItemProps) => {
-  console.log(count, status, title)
 return (
   <View style={listItemStyles.container}>
     <Text style={listItemStyles.text}>{title}</Text>
