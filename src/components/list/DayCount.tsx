@@ -1,10 +1,8 @@
-import { Text, View } from "react-native";
-import { dayCountStyles } from "../../styles/list/dayCountStyles";
-
-
+import { Text, View } from 'react-native';
+import { dayCountStyles } from '../../styles/list/dayCountStyles';
 
 const DayCount = (count: number) => {
-return 
+  return;
 };
 
-export default DayCount
+export default DayCount;
