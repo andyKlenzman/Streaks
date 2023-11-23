@@ -3,11 +3,13 @@ import { Provider } from "react-redux";
 import { store } from "../../store/store";
 import Tabs from "expo-router/tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const TabsLayout = () => {
     return (
    <Provider store={store}>
     <Tabs screenOptions={{ headerShown: false }}>
+    <SafeAreaView>
     <Tabs.Screen
         name="create"
         options={{
@@ -54,8 +56,9 @@ const TabsLayout = () => {
           ),
         }}
       />
-      
+      </SafeAreaView>
     </Tabs>
+    
   </Provider>
        
   )

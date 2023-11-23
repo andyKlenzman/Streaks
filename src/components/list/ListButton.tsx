@@ -1,7 +1,7 @@
 import { TouchableOpacity, Text } from "react-native";
 import { listButtonStyles } from "../../styles/list/listButtonStyles";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StreakStatus } from "../../shared/interfaces/streakStatus.interface";
+import { StreakStatus } from "../../shared/interfaces/streak.interface";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 interface ListButtonProps {

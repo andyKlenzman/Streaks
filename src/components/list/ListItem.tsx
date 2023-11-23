@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import ListButton from "./ListButton";
 import { listItemStyles } from "../../styles/list/listItemStyles";
 import { dayCountStyles } from "../../styles/list/dayCountStyles";
-import { StreakStatus } from "../../shared/interfaces/streakStatus.interface";
+import { StreakStatus } from "../../shared/interfaces/streak.interface";
 
 
 interface ListItemProps {
