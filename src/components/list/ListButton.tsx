@@ -1,8 +1,8 @@
 import { TouchableOpacity, Text } from "react-native";
-import { listButtonStyles } from "../../styles/list/listButtonStyles";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StreakStatus } from "../../shared/interfaces/streak.interface";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet } from "react-native";
 
 interface ListButtonProps {
   status: StreakStatus;
@@ -11,27 +11,54 @@ interface ListButtonProps {
 
 const ListButton: React.FC<ListButtonProps> = ({status}) => {
   let icon;
-  let backgroundColor
   const handleClick = () => {
    
   };
 
   if (status === 'complete') {
-    icon = <Ionicons name="md-checkmark-circle" size={32} color="green" />;
+    icon = (<TouchableOpacity style={styles.button} onPress={handleClick}>
+             <Ionicons name="md-checkmark-circle" size={32} color="green" />
+            </TouchableOpacity>)
   }
   if (status === 'broken') {
-    icon = <Ionicons name="md-checkmark-circle" size={32} color="red" />;
+    icon = (
+            <>
+            <TouchableOpacity style={styles.button} onPress={handleClick}>
+              <Ionicons name="md-refresh" size={32} color="green" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleClick}>
+              <Ionicons name="md-trash" size={32} color="red" />
+            </TouchableOpacity>
+            
+            </>
+          );
   }
   if (status === 'pending') {
-    icon = <MaterialCommunityIcons name="timer-sand-complete" size={32} color="blue" />
+
+    icon = (
+      <TouchableOpacity style={styles.button} onPress={handleClick}>
+        <MaterialCommunityIcons name="timer-sand-complete" size={32} color="blue" />
+      </TouchableOpacity>
+      )
   }
 
-return (
- <TouchableOpacity style={listButtonStyles.button} onPress={handleClick}>
-   {icon}
- </TouchableOpacity>      
-      )
+  return icon
+ 
+
+  
+      
 
 } 
 
 export default ListButton
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: 'lightgrey',
+    borderRadius: 50,
+    padding: 7,
+    margin: 5
+
+  },
+  
+});

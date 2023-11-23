@@ -38,24 +38,9 @@ const TabsLayout = () => {
               name="star"
             />
           ),
-        }}
-        
+        }} 
       />
-      <Tabs.Screen
-        name="history"
-        options={{
-          headerShown: false,
-          tabBarLabel: "History",
-          title: "History",
-          tabBarIcon: () => (
-            <FontAwesome
-              size={28}
-              style={{ marginBottom: -3 }}
-              name="book"
-            />
-          ),
-        }}
-      />
+    
       </SafeAreaView>
     </Tabs>
     

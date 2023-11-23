@@ -4,10 +4,10 @@ import CreateStreakForm from '../../../components/form/CreateStreakForm';
 
 export default function index() {
   return (
-    <View>
-      <Stack.Screen options={{ headerShown: true, title: "Create New Streak" }} />
+    <>
+      <Stack.Screen options={{ headerShown: true, title: "Create New Streak" }} ></Stack.Screen>
       <CreateStreakForm />
-    </View>
+    </>
       
   );
 }

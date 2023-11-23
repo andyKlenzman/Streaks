@@ -9,10 +9,9 @@ export interface Streak {
 export interface StreakFormInput {
     title: string;
     partner: ""
-
 }
 
-export type StreakStatus = 'pending' | 'complete' | 'broken'
+export type StreakStatus = 'pending' | 'complete' | 'broken' 
 
 
 export interface Streaks extends Array<Streak> {}

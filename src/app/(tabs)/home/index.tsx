@@ -5,10 +5,10 @@ import ListContainer from '../../../components/list/ListContainer';
 
 export default function index() {
   return (
-    <View>
+    <>
       <Stack.Screen options={{ headerShown: true, title: "Streaks" }} />
       <ListContainer />
-    </View>
+    </>
       
   );
 }

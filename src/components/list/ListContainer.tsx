@@ -1,9 +1,8 @@
 import { FlatList } from "react-native";
 import ListItem from "./ListItem";
-import { listContainerStyles } from "../../styles/list/listContainerStyles";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import { selectAllStreaks } from "../../store/selectors/selectAllStreaks";
-  
+import { StyleSheet } from "react-native";
 
 
 const ListContainer = () => {
@@ -14,10 +13,17 @@ return (
         data={streaks}
         renderItem={({item}) => <ListItem {...item}/>}
         keyExtractor={item => item.id}
-        style={listContainerStyles.container}
+        style={styles.container}
       />      
       )
 
 } 
 
 export default ListContainer
+
+
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+ 
+    }})

@@ -9,7 +9,7 @@ import { StreakFormInput } from '../../shared/interfaces/streak.interface'
 const initialState: Streaks = [{  id: '0',
               title: 'No screens before bed',
               count: 0,
-              status: 'pending',
+              status: 'broken',
               partner: ''
           }]
 

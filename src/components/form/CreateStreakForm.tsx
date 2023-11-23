@@ -18,7 +18,7 @@ const CreateStreakForm = () => {
 
     const validationSchema = Yup.object({
       title: Yup.string().max(50, 'Title must be at most 50 characters').required('Title is requried'),
-      partner: Yup.string().email('Invalid email').required('Email is required')
+      partner: Yup.string().email('Invalid email')
     });
 
   
