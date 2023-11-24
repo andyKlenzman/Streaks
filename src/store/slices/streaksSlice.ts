@@ -3,12 +3,11 @@ import type { RootState } from '../store';
 import { Streak, Streaks } from '../../shared/interfaces/streak.interface';
 import { StreakFormInput } from '../../shared/interfaces/streak.interface';
 
-// Define a type for the slice state
 
-// Define the initial state using that type
 const initialState: Streaks = [
   { id: '0', title: 'No screens before bed', count: 0, status: 'complete', partner: '' },
 ];
+
 
 export const streaksSlice = createSlice({
   name: 'streaks',

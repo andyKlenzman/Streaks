@@ -1,11 +1,34 @@
 import { configureStore } from '@reduxjs/toolkit';
-import streaksSlice from './slices/streaksSlice';
+import AsyncStorage from 
+'@react-native-async-storage/async-storage';
+import { persistStore, persistReducer } from 'redux-persist'
+import rootReducer from './rootReducer';
+import thunk from 'redux-thunk'
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: ['streaks'],
+}
 
-export const store = configureStore({
-  reducer: {
-    streaks: streaksSlice,
-  },
-});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+
+// const persistConfig = {
+//   key: 'root',
+//   storage: AsyncStorage,
+//    stateReconciler" 
+//   whitelist: ['key1', 'key2'],
+//   blacklist: ['key3', 'key4'],
+// };
+
+export let store = configureStore({
+    reducer: persistedReducer,
+    middleware: [thunk]
+
+  })
+
+export let persistor = persistStore(store)
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
