@@ -8,7 +8,7 @@ const ListContainer = () => {
   const streaks = useAppSelector(selectAllStreaks);
 
   return (
-    <FlatList
+    <FlatList 
       data={streaks}
       renderItem={({ item }) => <ListItem {...item} />}
       keyExtractor={(item) => item.id}

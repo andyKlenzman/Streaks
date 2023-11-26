@@ -12,14 +12,13 @@ const CreateStreakForm = () => {
 
   const initialValues: StreakFormInput = {
     title: '',
-    partner: '',
   };
 
   const validationSchema = Yup.object({
     title: Yup.string()
       .max(50, 'Title must be at most 50 characters')
       .required('Title is requried'),
-    partner: Yup.string().email('Invalid email'),
+    // partner: Yup.string().email('Invalid email'),
   });
 
   const onSubmit = async (
@@ -47,21 +46,6 @@ const CreateStreakForm = () => {
             style={styles.input}
             placeholder={'Enter streak name here'}
           />
-
-          <View style={styles.labelContainer}>
-            <Text>Invite Partner with email</Text>
-            {touched.partner && errors.partner && (
-              <Text style={{ color: 'red' }}>{errors.partner}</Text>
-            )}
-          </View>
-          <TextInput
-            onChangeText={handleChange('partner')}
-            onBlur={handleBlur('partner')}
-            value={values.partner}
-            style={styles.input}
-            placeholder={"Enter partner's email here"}
-          />
-
           <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>

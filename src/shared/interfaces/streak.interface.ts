@@ -1,14 +1,15 @@
 export interface Streak {
-  id: string;
+  id: string | number[];
   title: string;
   count: number;
   status: StreakStatus;
-  partner: '';
+  time: Date
 }
+
+
 
 export interface StreakFormInput {
   title: string;
-  partner: '';
 }
 
 export type StreakStatus = 'pending' | 'complete' | 'broken';
