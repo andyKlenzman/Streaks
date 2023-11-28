@@ -15,32 +15,28 @@ const ListItem = ({ title, count, status, time, id }: Streak) => {
   const [remainingTime, setRemainingTime] = useState({hours:0, minutes:0, seconds: 0});
 
   const calculateRemainingTime = () => {
-    if (time && typeof time.getTime === 'function') {
-
       const now = new Date();
-      const futureTime = new Date(time);
-      futureTime.setHours(futureTime.getHours() + 24);
+
+      const streakDeadline = new Date(time);
+      streakDeadline.setHours(streakDeadline.getHours() + 24);
 
 
-      const timeDifference = futureTime.getTime() - now.getTime();
-
-
+      const timeDifference = streakDeadline.getTime() - now.getTime();
       const remainingDate = new Date(timeDifference);
 
       const hours = remainingDate.getUTCHours();
       const minutes = remainingDate.getMinutes();
       const seconds = remainingDate.getSeconds();
 
-      console.log(time, futureTime, hours, minutes, seconds)
+      console.log(time, " / ", streakDeadline)
 
       setRemainingTime({ hours, minutes, seconds });
 
-    } else {
-      setRemainingTime({ hours: 0, minutes: 0, seconds: 0 });
-    }
+    
   };
 
   useEffect(() => {
+    if(time) calculateRemainingTime();
     const interval = setInterval(() => {
       if(time){
         calculateRemainingTime();
@@ -63,7 +59,7 @@ const ListItem = ({ title, count, status, time, id }: Streak) => {
   return (
     <View style={[styles.container, conditionalStyles]}>
       <Text style={styles.text}>{title} </Text>
-      <Text style={styles.text}>{remainingTime.hours}/{remainingTime.minutes}</Text>
+      <Text style={styles.text}>{remainingTime.hours}/{remainingTime.minutes}/{remainingTime.seconds}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={styles.dayCount}>{count}</Text>
         <ListButton status={status} />

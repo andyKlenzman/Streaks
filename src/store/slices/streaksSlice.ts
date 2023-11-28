@@ -12,14 +12,15 @@ export const streaksSlice = createSlice({
   initialState,
   reducers: {
     addNewStreak: (state, action: PayloadAction<StreakFormInput>) => {
-      const newTime = new Date
-      console.log(typeof newTime)
+     
+      const currentUtcTime = new Date().toISOString()
+      // console.log(typeof newTime)
       const newStreak: Streak = {
         id: uuid.v4(),
         title: action.payload.title,
         count: 0,
         status: 'pending',
-        time: newTime
+        time: currentUtcTime
       };
       state.push(newStreak);
     },

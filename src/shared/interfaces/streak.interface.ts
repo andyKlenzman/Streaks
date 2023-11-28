@@ -3,7 +3,7 @@ export interface Streak {
   title: string;
   count: number;
   status: StreakStatus;
-  time: Date
+  time: string
 }
 
 
