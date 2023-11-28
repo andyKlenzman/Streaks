@@ -34,17 +34,12 @@ const ListItem = ({ title, count, status, time, id }: Streak) => {
 
     
   };
-
   useEffect(() => {
-    if(time) calculateRemainingTime();
+    calculateRemainingTime();
     const interval = setInterval(() => {
-      if(time){
         calculateRemainingTime();
-      }
+    }, 1000);
 
-    }, 1000); // Update every second
-
-    // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, [time]);
 
