@@ -16,11 +16,8 @@ const ListItem = ({ title, count, status, time, id }: Streak) => {
 
   const calculateRemainingTime = () => {
       const now = new Date();
-
       const streakDeadline = new Date(time);
       streakDeadline.setHours(streakDeadline.getHours() + 24);
-
-
       const timeDifference = streakDeadline.getTime() - now.getTime();
       const remainingDate = new Date(timeDifference);
 
@@ -28,12 +25,9 @@ const ListItem = ({ title, count, status, time, id }: Streak) => {
       const minutes = remainingDate.getMinutes();
       const seconds = remainingDate.getSeconds();
 
-      console.log(time, " / ", streakDeadline)
-
       setRemainingTime({ hours, minutes, seconds });
-
-    
   };
+  
   useEffect(() => {
     calculateRemainingTime();
     const interval = setInterval(() => {
