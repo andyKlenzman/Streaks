@@ -16,7 +16,7 @@ const DeleteButton: FC<DeleteButtonProps> = ({ id }) => {
 
   return (
     <TouchableOpacity style={styles.pendingButton} onPress={handleClick}>
-      <Ionicons name="md-trash" size={32} color="blue" />
+      <Ionicons name="md-trash" size={32} color="darkgrey" />
     </TouchableOpacity>
   );
 };

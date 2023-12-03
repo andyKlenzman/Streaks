@@ -5,7 +5,7 @@ const now = new Date()
 export const currentTime = now.toISOString()
 
 
-const twentyFiveHoursLater = new Date().setHours(now.getHours() + 25)
+const twentyFiveHoursLater = new Date().setHours(now.getHours() - 25)
 export const pastStreakDeadline = new Date(twentyFiveHoursLater).toISOString()
 
 

@@ -1,14 +1,16 @@
 import { Text, View } from 'react-native';
-import ListButton from '../list/ListButton';
 import { Streak } from '../../shared/interfaces/streak.interface';
 import { StyleSheet } from 'react-native';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import DeleteButton from '../list/DeleteButton';
+import { changeStreakStatus } from '../../store/slices/streaksSlice';
+import { useAppDispatch } from '../../../hooks';
+import PendingStreakButton from './buttons/PendingStreakButton';
 
 const PendingListItem = ({ title, count, status, time, id }: Streak) => {
   const [remainingTime, setRemainingTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
-
+  const dispatch = useAppDispatch()
   const calculateRemainingTime = () => {
     const now = new Date();
     const streakDeadline = new Date(time);
@@ -21,9 +23,9 @@ const PendingListItem = ({ title, count, status, time, id }: Streak) => {
     const seconds = remainingDate.getSeconds();
 
     setRemainingTime({ hours, minutes, seconds });
-    // if(remainingDate <= 0){
-    //fire off action to change the state of the item to broken.
-    // }
+    if(remainingDate.getTime() <= 0){
+      dispatch(changeStreakStatus({id:id , status:"broken"}))
+    }
   };
 
   useEffect(() => {
@@ -43,7 +45,7 @@ const PendingListItem = ({ title, count, status, time, id }: Streak) => {
       </Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={styles.dayCount}>{count}</Text>
-        <ListButton status={status} />
+        <PendingStreakButton id={id}/>
         <DeleteButton id={id} />
       </View>
     </View>

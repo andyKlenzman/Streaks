@@ -3,6 +3,8 @@ import ListButton from '../list/ListButton';
 import { Streak } from '../../shared/interfaces/streak.interface';
 import { StyleSheet } from 'react-native';
 import DeleteButton from '../list/DeleteButton';
+import RetryButton from './buttons/RetryButton';
+
 
 const BrokenListItem = ({ title, count, status, time, id }: Streak) => {
   return (
@@ -10,7 +12,8 @@ const BrokenListItem = ({ title, count, status, time, id }: Streak) => {
       <Text style={styles.text}>{title}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={styles.dayCount}>{count}</Text>
-        <ListButton status={status} />
+        {/* <ListButton status={status} /> */}
+        <RetryButton id={id} />
         <DeleteButton id={id} />
       </View>
     </View>
