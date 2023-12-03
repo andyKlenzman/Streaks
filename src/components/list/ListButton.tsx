@@ -8,7 +8,7 @@ interface ListButtonProps {
   status: StreakStatus;
 }
 
-const ListButton:FC<ListButtonProps> = ({ status }) => {
+const ListButton: FC<ListButtonProps> = ({ status }) => {
   let icon;
   const handleClick = () => {};
 

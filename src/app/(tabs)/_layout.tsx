@@ -10,7 +10,6 @@ const TabsLayout = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Tabs screenOptions={{ headerShown: false }}>
-          <SafeAreaView>
             <Tabs.Screen
               name="create"
               options={{
@@ -33,7 +32,6 @@ const TabsLayout = () => {
                 ),
               }}
             />
-          </SafeAreaView>
         </Tabs>
       </PersistGate>
     </Provider>

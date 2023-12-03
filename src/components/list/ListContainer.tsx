@@ -1,6 +1,8 @@
 import { FlatList } from 'react-native';
-import ListItem from './ListItem';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
+import PendingListItem from '../listItems/PendingListItem';
+import BrokenListItem from '../listItems/BrokenListItem';
+import CompleteListItem from '../listItems/CompleteListItem';
+import { useAppSelector } from '../../../hooks';
 import { selectAllStreaks } from '../../store/selectors/selectAllStreaks';
 import { StyleSheet } from 'react-native';
 
@@ -8,9 +10,20 @@ const ListContainer = () => {
   const streaks = useAppSelector(selectAllStreaks);
 
   return (
-    <FlatList 
+    <FlatList
       data={streaks}
-      renderItem={({ item }) => <ListItem {...item} />}
+      renderItem={({ item }) => {
+        switch (item.status) {
+          case 'pending':
+            return <PendingListItem {...item} />;
+          case 'complete':
+            return <CompleteListItem {...item} />;
+          case 'broken':
+            return <BrokenListItem {...item} />;
+          default:
+            return null;
+        }
+      }}
       keyExtractor={(item) => item.id}
       style={styles.container}
     />

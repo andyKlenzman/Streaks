@@ -1,9 +1,7 @@
 import { TouchableOpacity, Text } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
 import { StyleSheet } from 'react-native';
 import { deleteStreak } from '../../store/slices/streaksSlice';
-import { AppDispatch } from '../../store/store';
 import { useAppDispatch } from '../../../hooks';
 
 interface DeleteButtonProps {

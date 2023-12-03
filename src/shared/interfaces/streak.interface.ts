@@ -6,8 +6,6 @@ export interface Streak {
   time: string
 }
 
-
-
 export interface StreakFormInput {
   title: string;
 }

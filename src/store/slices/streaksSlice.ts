@@ -4,7 +4,6 @@ import { Streak, Streaks } from '../../shared/interfaces/streak.interface';
 import { StreakFormInput } from '../../shared/interfaces/streak.interface';
 import uuid from 'react-native-uuid';
 
-
 const initialState: Streaks = [
 ];
 export const streaksSlice = createSlice({
@@ -14,7 +13,6 @@ export const streaksSlice = createSlice({
     addNewStreak: (state, action: PayloadAction<StreakFormInput>) => {
      
       const currentUtcTime = new Date().toISOString()
-      // console.log(typeof newTime)
       const newStreak: Streak = {
         id: uuid.v4(),
         title: action.payload.title,
