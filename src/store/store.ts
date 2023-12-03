@@ -6,15 +6,9 @@ import thunk from 'redux-thunk'
 import { PreloadedState } from '@reduxjs/toolkit';
 import streaksSlice from './slices/streaksSlice';
 import { combineReducers } from '@reduxjs/toolkit';
-
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { initialState } from '../../tests/data/testStateData';
-import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
-/*
-COULD DO:
-- run an experiment with setting up the app store with setup function for both test and production environements
-- 
- */
+
 
 const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
 

@@ -22,9 +22,8 @@ const PendingListItem = ({ title, count, status, time, id }: Streak) => {
 
     setRemainingTime({ hours, minutes, seconds });
     // if(remainingDate <= 0){
-      //fire off action to change the state of the item to broken. 
+    //fire off action to change the state of the item to broken.
     // }
-    
   };
 
   useEffect(() => {
@@ -37,10 +36,7 @@ const PendingListItem = ({ title, count, status, time, id }: Streak) => {
   }, [time]);
 
   return (
-    <View style={styles.container}
-    role="listitem"
-    accessibilityLabel={`pending streak`}
-    >
+    <View style={styles.container} role="listitem" accessibilityLabel={`pending streak`}>
       <Text style={styles.text}>{title} </Text>
       <Text style={styles.text}>
         {remainingTime.hours}/{remainingTime.minutes}/{remainingTime.seconds}

@@ -1,7 +1,6 @@
 import { FlatList } from 'react-native';
 import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
-import CompleteListItem from '../listItems/CompleteListItem';
 import { useAppSelector } from '../../../hooks';
 import { selectAllStreaks } from '../../store/selectors/selectAllStreaks';
 import { StyleSheet } from 'react-native';
@@ -16,8 +15,6 @@ const ListContainer = () => {
         switch (item.status) {
           case 'pending':
             return <PendingListItem {...item} />;
-          case 'complete':
-            return <CompleteListItem {...item} />;
           case 'broken':
             return <BrokenListItem {...item} />;
           default:
