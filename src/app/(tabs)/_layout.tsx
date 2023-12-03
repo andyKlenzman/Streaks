@@ -5,16 +5,12 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { PersistGate } from 'redux-persist/integration/react';
 
-
-
 const TabsLayout = () => {
-
   const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
 
-
-  if(isDevelopment){
-    persistor.purge()
-    console.log("AsyncStorage Purged") 
+  if (isDevelopment) {
+    persistor.purge();
+    console.log('AsyncStorage Purged');
   }
   return (
     <Provider store={store}>

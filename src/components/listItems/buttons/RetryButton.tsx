@@ -9,18 +9,17 @@ interface ListButtonProps {
   id: string;
 }
 
-const RetryButton: FC<ListButtonProps> = ({id}) => {
-  const dispatch = useAppDispatch()
+const RetryButton: FC<ListButtonProps> = ({ id }) => {
+  const dispatch = useAppDispatch();
   const handleClick = () => {
-    dispatch(retryStreak(id))
+    dispatch(retryStreak(id));
   };
 
-    return (
-      <TouchableOpacity style={styles.pendingButton} onPress={handleClick}>
-        <Ionicons name="md-refresh" size={32} color="green" />
-      </TouchableOpacity>
-    );
-
+  return (
+    <TouchableOpacity style={styles.pendingButton} onPress={handleClick}>
+      <Ionicons name="md-refresh" size={32} color="green" />
+    </TouchableOpacity>
+  );
 };
 
 export default RetryButton;

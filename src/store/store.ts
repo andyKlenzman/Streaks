@@ -8,12 +8,13 @@ import streaksSlice from './slices/streaksSlice';
 import { combineReducers } from '@reduxjs/toolkit';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { initialState } from '../../tests/data/testStateData';
-
+import uiSlice from './slices/uiSlice';
 
 const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
 
 const rootReducer = combineReducers({
   streaks: streaksSlice,
+  ui: uiSlice
 });
 
 const persistConfig = {

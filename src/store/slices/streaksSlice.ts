@@ -4,8 +4,7 @@ import { Streak, Streaks } from '../../shared/interfaces/streak.interface';
 import { StreakFormInput } from '../../shared/interfaces/streak.interface';
 import uuid from 'react-native-uuid';
 
-const initialState: Streaks = [
-];
+const initialState: Streaks = [];
 
 
 export const streaksSlice = createSlice({
@@ -20,7 +19,7 @@ export const streaksSlice = createSlice({
         title: action.payload.title,
         count: 0,
         status: 'pending',
-        time: currentUtcTime
+        time: currentUtcTime,
       };
       state.push(newStreak);
     },
@@ -54,13 +53,14 @@ export const streaksSlice = createSlice({
         state[index] = updatedStreak;
       }
     },
+    
+   
 
   },
 });
 
 export const { addNewStreak, deleteStreak, changeStreakStatus, completeStreak, retryStreak } = streaksSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
-export const selectCount = (state: RootState) => state.streaks;
+
 
 export default streaksSlice.reducer;
