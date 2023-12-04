@@ -57,8 +57,8 @@ const PendingListItem = ({ title, count, status, time, id }: Streak) => {
   return (
     <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={`pending streak`}>
       <View style={styles.topContainer}>
-        <View>
-          <Text style={styles.textMain}>{title}</Text>
+        <View style={styles.textContainer}>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>{title}</Text>
           <Text style={styles.textSecondary}>
             {remainingTime.hours} hr {remainingTime.minutes} min {remainingTime.seconds} sec
           </Text>
@@ -104,9 +104,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
+  textContainer: {
+    maxWidth: '70%',
+  },
   textMain: {
     fontSize: 24,
     fontWeight: '600',
+    flexShrink: 1, // Allow text to shrink if it exceeds available space
+     // Adjust the percentage based on your layout needs
+
+
   },
   textSecondary: {
     fontSize: 20,
