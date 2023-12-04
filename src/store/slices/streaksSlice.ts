@@ -41,7 +41,7 @@ export const streaksSlice = createSlice({
 
       const index = state.findIndex((streak) => streak.id === action.payload)
       if (index !== -1) {
-        const updatedStreak = { ...state[index], time:currentUtcTime, count : state[index].count + 1  };
+        const updatedStreak = { ...state[index], time:currentUtcTime, count : state[index].count + 1 , status: 'complete' };
         state[index] = updatedStreak;
       }
     },

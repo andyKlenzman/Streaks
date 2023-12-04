@@ -4,6 +4,7 @@ import BrokenListItem from '../listItems/BrokenListItem';
 import { useAppSelector } from '../../../hooks';
 import { selectAllStreaks } from '../../store/selectors/selectAllStreaks';
 import { StyleSheet } from 'react-native';
+import CompleteListItem from '../listItems/CompleteListItem';
 
 const ListContainer = () => {
   const streaks = useAppSelector(selectAllStreaks);
@@ -13,6 +14,8 @@ const ListContainer = () => {
       data={streaks}
       renderItem={({ item }) => {
         switch (item.status) {
+          case 'complete':
+            return <CompleteListItem {...item} />;
           case 'pending':
             return <PendingListItem {...item} />;
           case 'broken':

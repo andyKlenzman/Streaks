@@ -11,22 +11,22 @@ const BrokenListItem = ({ title, count, status, time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
 
-
-
   const handlePress = () => {
-    dispatch(openStreak(id))
-
-  }
+    dispatch(openStreak(id));
+  };
   return (
     <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={'broken streak'}>
       <View style={styles.topContainer}>
-      <View>
-        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>{title}</Text>
-        <Text style={styles.textSecondary}>broken</Text>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Text style={styles.dayCount}>{count}</Text>
-        <RetryButton id={id} />
+        <View>
+          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
+            {title}
+          </Text>
+          <Text style={styles.textSecondary}>broken</Text>
+        </View>
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={styles.dayCount}>{count}</Text>
+          <RetryButton id={id} />
         </View>
       </View>
       {openStreakId === id ? (
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: 'row', // or 'column' based on your layout needs
     alignItems: 'center',
-
   },
   textMain: {
     fontSize: 24,

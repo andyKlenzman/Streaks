@@ -47,8 +47,7 @@ const CreateStreakForm = () => {
             placeholder={'Enter streak name here'}
             maxLength={30} // Limit to 30 characters
           />
-                    <Text style={styles.characterCount}>{values.title.length}/30</Text>
-      
+          <Text style={styles.characterCount}>{values.title.length}/30</Text>
 
           <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
             <Text style={styles.submitButtonText}>Submit</Text>

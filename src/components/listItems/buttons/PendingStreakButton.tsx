@@ -20,10 +20,6 @@ const PendingStreakButton: FC<ListButtonProps> = ({ id }) => {
       <MaterialCommunityIcons name="timer-sand-complete" size={32} color="#2282FF" />
     </TouchableOpacity>
   );
-
-  // <TouchableOpacity style={styles.successIcon} onPress={handleClick}>
-  //     <Ionicons name="md-checkmark-circle" size={32} color="green" />
-  //   </TouchableOpacity>
 };
 
 export default PendingStreakButton;
