@@ -16,7 +16,7 @@ const DeleteButton: FC<DeleteButtonProps> = ({ id }) => {
 
   return (
     <TouchableOpacity style={styles.pendingButton} onPress={handleClick}>
-      <Ionicons name="md-trash" size={32} color="darkgrey" />
+      <Ionicons name="md-trash" size={32} color="#2282FF" />
     </TouchableOpacity>
   );
 };
@@ -25,14 +25,14 @@ export default DeleteButton;
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: 'lightgrey',
+    backgroundColor: 'transparent',
     borderRadius: 50,
     padding: 7,
     margin: 5,
   },
 
   pendingButton: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     borderRadius: 50,
     padding: 7,
     margin: 5,
