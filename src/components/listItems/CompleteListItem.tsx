@@ -1,18 +1,18 @@
-import { Text, TouchableOpacity, View,StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
-import { useEffect , useState} from 'react';
-import DeleteButton from '../list/DeleteButton';
+import { useEffect, useState } from 'react';
+import DeleteButton from './buttons/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
 import CompleteButton from './buttons/CompleteButton';
-import { getTimeUntilStatusChange , parseTime} from '../../utils/timeUtils';
+import { getTimeUntilStatusChange, parseTime } from '../../utils/timeUtils';
 
 const CompleteListItem = ({ title, count, time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
-  const [remainingTime, setRemainingTime] = useState({  hours: 0, minutes: 0, seconds: 0 });
+  const [remainingTime, setRemainingTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   const handleTimeOperations = () => {
     const timeUntilStatusChange = getTimeUntilStatusChange(time);
@@ -29,7 +29,6 @@ const CompleteListItem = ({ title, count, time, id }: Streak) => {
   const handlePress = () => {
     dispatch(openStreak(id));
   };
-
 
   useEffect(() => {
     handleTimeOperations();
@@ -49,12 +48,10 @@ const CompleteListItem = ({ title, count, time, id }: Streak) => {
           </Text>
           {/* <Text style={styles.textSecondary}>complete</Text> */}
           <Text style={styles.textSecondary}>
-            {remainingTime.hours} hr {remainingTime.minutes} min{' '}
-            {remainingTime.seconds} sec 
+            {remainingTime.hours} hr {remainingTime.minutes} min {remainingTime.seconds} sec
           </Text>
         </View>
-        <View
-          style={styles.dayCountAndButtonContainer}>
+        <View style={styles.dayCountAndButtonContainer}>
           <Text style={styles.dayCount}>{count}</Text>
           <CompleteButton />
         </View>
@@ -108,7 +105,9 @@ const styles = StyleSheet.create({
   },
 
   dayCountAndButtonContainer: {
-     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' 
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   dayCount: {
     fontSize: 24,

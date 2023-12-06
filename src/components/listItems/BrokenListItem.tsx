@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import ListButton from '../list/ListButton';
 import { Streak } from '../../shared/interfaces/streak.interface';
 import { StyleSheet } from 'react-native';
-import DeleteButton from '../list/DeleteButton';
+import DeleteButton from './buttons/DeleteButton';
 import RetryButton from './buttons/RetryButton';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { openStreak } from '../../store/slices/uiSlice';

@@ -1,6 +1,6 @@
 import { Redirect } from 'expo-router';
 
 const HomeLayout = () => {
-  return <Redirect href={'/(tabs)/home'} />;
+  return <Redirect href={'/(tabs)/streaks'} />;
 };
 export default HomeLayout;

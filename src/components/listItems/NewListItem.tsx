@@ -1,6 +1,6 @@
-import { Text, TouchableOpacity, View,StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
-import DeleteButton from '../list/DeleteButton';
+import DeleteButton from './buttons/DeleteButton';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import PendingStreakButton from './buttons/PendingStreakButton';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
@@ -21,12 +21,9 @@ const NewListItem = ({ title, count, time, id }: Streak) => {
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
             {title}
           </Text>
-          <Text style={styles.textSecondary}>
-            Do your behavior and set your streak!
-          </Text>
+          <Text style={styles.textSecondary}>Do your behavior and set your streak!</Text>
         </View>
-        <View
-          style={styles.dayCountAndButtonContainer}>
+        <View style={styles.dayCountAndButtonContainer}>
           <Text style={styles.dayCount}>{count}</Text>
           <PendingStreakButton id={id} />
         </View>
@@ -78,8 +75,10 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   dayCountAndButtonContainer: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' 
- },
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   dayCount: {
     fontSize: 24,
     marginRight: 15,

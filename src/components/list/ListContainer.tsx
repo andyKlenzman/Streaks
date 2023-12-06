@@ -1,4 +1,4 @@
-import { FlatList } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
 import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
 import { useAppSelector } from '../../../hooks';
@@ -18,8 +18,8 @@ const ListContainer = () => {
           case 'complete':
             return <CompleteListItem {...item} />;
           case 'pending':
-            if(item.count === 0){
-              return <NewListItem  {...item} />;
+            if (item.count === 0) {
+              return <NewListItem {...item} />;
             }
             return <PendingListItem {...item} />;
           case 'broken':
@@ -29,7 +29,7 @@ const ListContainer = () => {
         }
       }}
       keyExtractor={(item) => item.id}
-      style={styles.container}
+      style={styles.list}
     />
   );
 };
@@ -37,7 +37,7 @@ const ListContainer = () => {
 export default ListContainer;
 
 const styles = StyleSheet.create({
-  container: {
+  list: {
     width: '100%',
   },
 });

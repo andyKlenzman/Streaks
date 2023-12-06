@@ -1,23 +1,46 @@
-import { View, TouchableOpacity, TextInput, Text, Button } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  TextInput,
+  Text,
+  Button,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
+} from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { Formik } from 'formik';
+import { Formik, FormikProps } from 'formik';
 import { StreakFormInput } from '../../shared/interfaces/streak.interface';
 import { addNewStreak } from '../../store/slices/streaksSlice';
 import * as Yup from 'yup';
 import { FormikHelpers } from 'formik';
 import { StyleSheet } from 'react-native';
-
+import { useNavigation } from 'expo-router/src/useNavigation';
+import { useEffect, useRef } from 'react';
 const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
+  const inputRef = useRef<TextInput>(null);
+  const formikRef = useRef<FormikProps<StreakFormInput>>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+
+    return () => {
+      console.log('Component unmounted');
+
+      inputRef.current && inputRef.current.blur(); // Ensure the input loses focus
+      formikRef.current?.resetForm();
+    };
+  }, []);
 
   const initialValues: StreakFormInput = {
     title: '',
   };
 
   const validationSchema = Yup.object({
-    title: Yup.string()
-      .max(30, 'Title must be at most 30 characters')
-      .required('Title is requried'),
+    title: Yup.string().max(30, 'Name must be at most 30 characters').required('requried'),
     // partner: Yup.string().email('Invalid email'),
   });
 
@@ -28,33 +51,63 @@ const CreateStreakForm = () => {
     try {
       dispatch(addNewStreak(values));
       resetForm();
+      navigation.navigate('streaks');
     } catch (error) {}
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-        <View style={styles.container}>
-          <View style={styles.labelContainer}>
-            <Text>Streak name</Text>
-            {touched.title && errors.title && <Text style={{ color: 'red' }}>{errors.title}</Text>}
-          </View>
-          <TextInput
-            onChangeText={handleChange('title')}
-            onBlur={handleBlur('title')}
-            value={values.title}
-            style={styles.input}
-            placeholder={'Enter streak name here'}
-            maxLength={30} // Limit to 30 characters
-          />
-          <Text style={styles.characterCount}>{values.title.length}/30</Text>
-
-          <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
-            <Text style={styles.submitButtonText}>Submit</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </Formik>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
+        <Formik
+          ref={formikRef}
+          initialValues={initialValues}
+          onSubmit={onSubmit}
+          validationSchema={validationSchema}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldValue,
+            setFieldTouched,
+            values,
+            errors,
+            touched,
+          }) => (
+            <View style={styles.formContainer}>
+              <View style={styles.labelContainer}>
+                <Text>Streak name</Text>
+                {touched.title && errors.title && (
+                  <Text style={{ color: 'red' }}>{errors.title}</Text>
+                )}
+              </View>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  ref={inputRef}
+                  onChangeText={(text) => {
+                    setFieldValue('title', text);
+                    setFieldTouched('title', true, false);
+                  }}
+                  onBlur={handleBlur('title')}
+                  value={values.title}
+                  style={styles.input}
+                  placeholder={'Enter streak name here'}
+                  maxLength={30}
+                  onSubmitEditing={handleSubmit}
+                />
+                <Text style={styles.characterCount}>{values.title.length}/30</Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
+                  <Text style={styles.submitButtonText}>Create</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </Formik>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -62,6 +115,9 @@ export default CreateStreakForm;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  formContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -83,9 +139,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   characterCount: {
+    position: 'absolute',
+    bottom: -15,
+    right: 10,
     color: 'grey',
-    alignSelf: 'flex-end',
-    marginBottom: 10,
+  },
+  inputContainer: {
+    flexDirection: 'row', // Align input and character count horizontally
+    alignItems: 'center',
+    width: '100%',
   },
   submitButton: {
     backgroundColor: '#3498db',
@@ -98,5 +160,17 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: 'orange',
+    paddingVertical: 15,
+    paddingHorizontal: 40,
+    marginTop: 15,
+    borderRadius: 5,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
