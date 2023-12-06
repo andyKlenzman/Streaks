@@ -1,65 +1,37 @@
 import { Text, TouchableOpacity, View,StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
-import { useEffect , useState} from 'react';
 import DeleteButton from '../list/DeleteButton';
-import { changeStreakStatus } from '../../store/slices/streaksSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
+import PendingStreakButton from './buttons/PendingStreakButton';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
-import CompleteButton from './buttons/CompleteButton';
-import { getTimeUntilStatusChange , parseTime} from '../../utils/timeUtils';
 
-const CompleteListItem = ({ title, count, time, id }: Streak) => {
+const NewListItem = ({ title, count, time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
-  const [remainingTime, setRemainingTime] = useState({  hours: 0, minutes: 0, seconds: 0 });
 
-  const handleTimeOperations = () => {
-    const timeUntilStatusChange = getTimeUntilStatusChange(time);
-    const { hours, minutes, seconds } = parseTime(timeUntilStatusChange);
-    setRemainingTime({ hours, minutes, seconds });
-
-    //the status of the streak will be changed when time expires, and pending list item will be rendered
-    if (timeUntilStatusChange.getTime() <= 0) {
-      dispatch(changeStreakStatus({ id: id, status: 'pending' }));
-    }
-  };
-
-  //this function allows for the list item to open and close to reveal more functionality when selected
   const handlePress = () => {
     dispatch(openStreak(id));
   };
 
-
-  useEffect(() => {
-    handleTimeOperations();
-    const interval = setInterval(() => {
-      handleTimeOperations();
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [time]);
-
   return (
-    <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={`complete streak`}>
+    <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={`pending streak`}>
       <View style={styles.topContainer}>
         <View style={styles.textContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
             {title}
           </Text>
-          {/* <Text style={styles.textSecondary}>complete</Text> */}
           <Text style={styles.textSecondary}>
-            {remainingTime.hours} hr {remainingTime.minutes} min{' '}
-            {remainingTime.seconds} sec 
+            Do your behavior and set your streak!
           </Text>
         </View>
         <View
           style={styles.dayCountAndButtonContainer}>
           <Text style={styles.dayCount}>{count}</Text>
-          <CompleteButton />
+          <PendingStreakButton id={id} />
         </View>
       </View>
-      {/* Hidden functionality, visible when the list item is pressed */}
+      {/* EXTENDED MENU */}
       {openStreakId === id ? (
         <View style={styles.bottomContainer}>
           <DeleteButton id={id} />
@@ -69,7 +41,7 @@ const CompleteListItem = ({ title, count, time, id }: Streak) => {
   );
 };
 
-export default CompleteListItem;
+export default NewListItem;
 
 const styles = StyleSheet.create({
   topContainer: {
@@ -89,7 +61,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    // backgroundColor: 'lightblue',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -106,10 +77,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'grey',
   },
-
   dayCountAndButtonContainer: {
-     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' 
-  },
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' 
+ },
   dayCount: {
     fontSize: 24,
     marginRight: 15,

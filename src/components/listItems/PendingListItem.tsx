@@ -1,31 +1,26 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View,StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
-import { StyleSheet } from 'react-native';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import DeleteButton from '../list/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import PendingStreakButton from './buttons/PendingStreakButton';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
-import { calculateRemainingTime } from '../../utils/calculateRemainingTime';
-import { calculateDueDate } from '../../utils/calculateRemainingTime';
-import { parseDate } from '../../utils/calculateRemainingTime';
-const PendingListItem = ({ title, count, status, time, id }: Streak) => {
-  const [remainingTime, setRemainingTime] = useState({ date: 0, hours: 0, mins: 0, secs: 0 });
-  const [dueDate, setDueDate] = useState('');
-  const openStreakId = useAppSelector(selectOpenStreak);
+import { parseTime, getTimeUntilStreakBroken } from '../../utils/timeUtils';
 
+const PendingListItem = ({ title, count, time, id }: Streak) => {
   const dispatch = useAppDispatch();
-  const handleTimeOperations = () => {
-    const dueDate = calculateDueDate(time);
-    const { timeDeltaObj, timeDeltaUTC } = calculateRemainingTime(dueDate);
+  const openStreakId = useAppSelector(selectOpenStreak);
+  const [remainingTime, setRemainingTime] = useState({hours: 0, minutes: 0, seconds: 0 });
 
-    const { date, hours, mins, secs } = parseDate(timeDeltaObj);
-    setRemainingTime({ date, hours, mins, secs });
-    setDueDate(dueDate.toString());
-    if (timeDeltaUTC <= 0) {
+  const handleTimeOperations = () => {
+    const dueDate = getTimeUntilStreakBroken(time);
+    const { hours, minutes, seconds } = parseTime(dueDate);
+    setRemainingTime({ hours, minutes, seconds });
+
+
+    if (dueDate.getTime() <= 0) {
       dispatch(changeStreakStatus({ id: id, status: 'broken' }));
     }
   };
@@ -50,13 +45,12 @@ const PendingListItem = ({ title, count, status, time, id }: Streak) => {
             {title}
           </Text>
           <Text style={styles.textSecondary}>
-            {remainingTime.date} day {remainingTime.hours} hr {remainingTime.mins} min{' '}
-            {remainingTime.secs} sec
+            {remainingTime.hours} hr {remainingTime.minutes} min{' '}
+            {remainingTime.seconds} sec
           </Text>
-          <Text style={styles.textSecondary}>{dueDate}</Text>
         </View>
         <View
-          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          style={styles.dayCountAndButtonContainer}>
           <Text style={styles.dayCount}>{count}</Text>
           <PendingStreakButton id={id} />
         </View>
@@ -91,7 +85,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    // backgroundColor: 'lightblue',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -109,6 +102,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'grey',
   },
+  dayCountAndButtonContainer: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' 
+ },
   dayCount: {
     fontSize: 24,
     marginRight: 15,

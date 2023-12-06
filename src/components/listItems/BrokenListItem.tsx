@@ -7,7 +7,7 @@ import RetryButton from './buttons/RetryButton';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { openStreak } from '../../store/slices/uiSlice';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
-const BrokenListItem = ({ title, count, status, time, id }: Streak) => {
+const BrokenListItem = ({ title, count, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
 
