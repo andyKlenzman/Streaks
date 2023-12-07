@@ -15,6 +15,7 @@ export const getTimeUntilStreakBroken = (time) => {
         
   
     } else {
+      console.log('to')
         data.setDate(data.getDate() +2)
         data.setHours(2, 0, 0, 0)
         dueDate = data

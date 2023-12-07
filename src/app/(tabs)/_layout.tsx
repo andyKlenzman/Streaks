@@ -7,7 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 const TabsLayout = () => {
   const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
   if (isDevelopment) {
-    // persistor.purge();
+    persistor.purge();
     console.log('AsyncStorage Purged');
   }
 
