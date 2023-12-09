@@ -1,5 +1,5 @@
 export interface Streak {
-  id: string | number[];
+  id: string;
   title: string;
   count: number;
   status: StreakStatus;

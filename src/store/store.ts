@@ -1,4 +1,4 @@
-import { CombinedState, configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import AsyncStorage from 
 '@react-native-async-storage/async-storage'; //Can only store string data
 import { persistStore, persistReducer } from 'redux-persist'

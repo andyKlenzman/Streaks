@@ -1,23 +1,26 @@
-export const calcTimeDifference = (time) => {
+/**
+ * 
+ *Okay so this is why all of this stuff isconfusing... It is all a different type. They should all take a date object, unless otherwise needed. 
+ */
+
+
+
+export const calcTimeDifference = (time:Date): Date => {
     let timeDeltaUTC = time.getTime() - new Date().getTime() ; 
     const timeDifference = new Date(timeDeltaUTC);
     return timeDifference
 }
 
-export const getTimeUntilStreakBroken = (time) => {
-    const data = new Date(time)
-    let dueDate
-
-    if(data.getHours() <= 2){
-        data.setDate(data.getDate() + 1)
-        data.setHours(2, 0, 0, 0)
-        dueDate = data
-        
-  
+export const getTimeUntilStreakBroken = (time:Date): Date => {
+    let dueDate: Date
+    if(time.getHours() <= 2){
+        time.setDate(time.getDate() + 1)
+        time.setHours(2, 0, 0, 0)
+        dueDate = time
     } else {
-        data.setDate(data.getDate() +2)
-        data.setHours(2, 0, 0, 0)
-        dueDate = data
+        time.setDate(time.getDate() +2)
+        time.setHours(2, 0, 0, 0)
+        dueDate = time
     }
     dueDate = calcTimeDifference(dueDate)
     return dueDate
@@ -41,12 +44,15 @@ export const getTimeUntilStreakBroken = (time) => {
     return timeUntilStatusChange
   }
 
-export const parseTime = (time) => {
 
-
-    const totalSeconds = Math.floor(time / 1000);
-
-  // Calculate hours, minutes, and remaining seconds
+interface ParsedTime {
+  hours: number,
+  minutes: number,
+  seconds: number
+}
+export const parseTime = (time: Date): ParsedTime => {
+  const timeUTC = time.getTime()
+  const totalSeconds = Math.floor(timeUTC / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;

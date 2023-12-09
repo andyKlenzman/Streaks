@@ -15,7 +15,8 @@ const PendingListItem = ({ title, count, time, id }: Streak) => {
   const [remainingTime, setRemainingTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   const handleTimeOperations = () => {
-    const dueDate = getTimeUntilStreakBroken(time);
+    const dateObj = new Date(time)
+    const dueDate = getTimeUntilStreakBroken(dateObj);
     const { hours, minutes, seconds } = parseTime(dueDate);
     setRemainingTime({ hours, minutes, seconds });
 
