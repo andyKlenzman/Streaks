@@ -1,12 +1,11 @@
-import { Text, TouchableOpacity, View } from 'react-native';
-import ListButton from '../list/ListButton';
+import { Text, TouchableOpacity, View,StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
-import { StyleSheet } from 'react-native';
 import DeleteButton from './buttons/DeleteButton';
 import RetryButton from './buttons/RetryButton';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { openStreak } from '../../store/slices/uiSlice';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
+
 const BrokenListItem = ({ title, count, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
@@ -58,13 +57,12 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    // backgroundColor: 'lightblue',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
   textContainer: {
-    flexDirection: 'row', // or 'column' based on your layout needs
+    flexDirection: 'row',
     alignItems: 'center',
   },
   textMain: {

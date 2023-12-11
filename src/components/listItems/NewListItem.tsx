@@ -6,7 +6,7 @@ import PendingStreakButton from './buttons/PendingStreakButton';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
 
-const NewListItem = ({ title, count, time, id }: Streak) => {
+const NewListItem = ({ title, count, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
 

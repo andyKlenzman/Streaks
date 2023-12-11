@@ -3,7 +3,6 @@ import ListContainer from './ListContainer';
 import { RootState, setupStore } from '../../store/store';
 import '../../utils/mock-async-storage';
 import { renderWithProviders } from '../../utils/test.utils';
-
 /*
 Notes
 - Does this test environement use asyncstorage and does it work???
@@ -11,8 +10,14 @@ Notes
  */
 
 test('Create streaks', () => {
+  // (alias) type RootState = EmptyObject & {
+//     streaks: Streaks;
+//     ui: string;
+// }
+// what is the empty object type
   const preloadedState: RootState = {
     streaks: [],
+    ui: ""
   };
 
   const mockFn = jest.fn();

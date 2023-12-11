@@ -3,36 +3,39 @@ import {
   TouchableOpacity,
   TextInput,
   Text,
-  Button,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
 } from 'react-native';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { Formik, FormikProps } from 'formik';
+import { useAppDispatch } from '../../../hooks';
+import { Formik } from 'formik';
 import { StreakFormInput } from '../../shared/interfaces/streak.interface';
 import { addNewStreak } from '../../store/slices/streaksSlice';
 import * as Yup from 'yup';
 import { FormikHelpers } from 'formik';
 import { StyleSheet } from 'react-native';
 import { useNavigation } from 'expo-router/src/useNavigation';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+
 const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const inputRef = useRef<TextInput>(null);
-  const formikRef = useRef<FormikProps<StreakFormInput>>(null);
+  const [allowError, setAllowError] = useState(false)
+
+  // what exactly is going on here? I dont know useCallback
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+      setAllowError(false)
+      };
+    }, [])
+  );
 
   useEffect(() => {
     inputRef.current?.focus();
-
-    return () => {
-      console.log('Component unmounted');
-
-      inputRef.current && inputRef.current.blur(); // Ensure the input loses focus
-      formikRef.current?.resetForm();
-    };
   }, []);
 
   const initialValues: StreakFormInput = {
@@ -61,7 +64,6 @@ const CreateStreakForm = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
         <Formik
-          ref={formikRef}
           initialValues={initialValues}
           onSubmit={onSubmit}
           validationSchema={validationSchema}>
@@ -78,7 +80,7 @@ const CreateStreakForm = () => {
             <View style={styles.formContainer}>
               <View style={styles.labelContainer}>
                 <Text>Streak name</Text>
-                {touched.title && errors.title && (
+                {touched.title && errors.title && allowError && (
                   <Text style={{ color: 'red' }}>{errors.title}</Text>
                 )}
               </View>
@@ -86,6 +88,7 @@ const CreateStreakForm = () => {
                 <TextInput
                   ref={inputRef}
                   onChangeText={(text) => {
+                    setAllowError(true)
                     setFieldValue('title', text);
                     setFieldTouched('title', true, false);
                   }}
@@ -94,7 +97,7 @@ const CreateStreakForm = () => {
                   style={styles.input}
                   placeholder={'Enter streak name here'}
                   maxLength={30}
-                  onSubmitEditing={handleSubmit}
+                  onSubmit={handleSubmit}
                 />
                 <Text style={styles.characterCount}>{values.title.length}/30</Text>
               </View>

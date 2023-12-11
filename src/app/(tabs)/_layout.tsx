@@ -7,7 +7,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 const TabsLayout = () => {
   const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
   if (isDevelopment) {
-    // persistor.purge();
+    persistor.purge();
     console.log('AsyncStorage Purged');
   }
 
@@ -15,14 +15,15 @@ const TabsLayout = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         {/* <ThemeProvider value={DarkTheme}> */}
-        <Tabs screenOptions={{ headerShown: false,
-    tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
-    tabBarStyle: { backgroundColor: '#FFFFFF', height: 60 },
-    tabBarActiveTintColor: '#2282FF',
-    tabBarInactiveTintColor: '#999999',}}
-    >
+        <Tabs
+          screenOptions={{
+            headerShown: false,
+            tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
+            tabBarStyle: { backgroundColor: '#FFFFFF', height: 60 },
+            tabBarActiveTintColor: '#2282FF',
+            tabBarInactiveTintColor: '#999999',
+          }}>
           <Tabs.Screen
-
             name="streaks"
             options={{
               headerShown: false,

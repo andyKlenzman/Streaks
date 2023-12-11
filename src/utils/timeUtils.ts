@@ -2,7 +2,8 @@
  * 
  *Okay so this is why all of this stuff isconfusing... It is all a different type. They should all take a date object, unless otherwise needed. 
  */
-
+import { ISOtimestamp } from "../shared/interfaces/streak.interface";
+import { isValidISOtimestamp } from "../shared/utils/isISOtimestamp";
 
 
 export const calcTimeDifference = (time:Date): Date => {
@@ -26,18 +27,18 @@ export const getTimeUntilStreakBroken = (time:Date): Date => {
     return dueDate
   }
 
-  export const getTimeUntilStatusChange = (time) => {
-    const data = new Date(time)
+  export const getTimeUntilStatusChange = (time:ISOtimestamp) => {
+    let timeObj = new Date(time)
     let timeWhenStatusChanges
-    if(data.getHours() <= 2){
-        data.setHours(4, 0, 0, 0)
-        timeWhenStatusChanges = data
+    if(timeObj.getHours() <= 2){
+        timeObj.setHours(4, 0, 0, 0)
+        timeWhenStatusChanges = timeObj
         
   
     } else {
-        data.setDate(data.getDate() + 1)
-        data.setHours(2, 0, 0, 0)
-        timeWhenStatusChanges = data
+        timeObj.setDate(timeObj.getDate() + 1)
+        timeObj.setHours(2, 0, 0, 0)
+        timeWhenStatusChanges = timeObj
     }
 
     const timeUntilStatusChange = calcTimeDifference(timeWhenStatusChanges)
