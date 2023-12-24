@@ -18,7 +18,8 @@ export const initialState:RootState= {
       { id: '3', title: 'be nice', count: 43, status: 'pending', time: currentTime },
       { id: '4', title: 'stretch', count: 2, status: 'pending', time: pastStreakDeadline },
       { id: '5', title: 'TEST', count: 2, status: 'complete', time: laterTime },
-    ]
+    ],
+    ui: ""
   };
 
 

@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
 import { useAppSelector } from '../../../hooks';

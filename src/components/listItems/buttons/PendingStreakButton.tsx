@@ -35,8 +35,12 @@ const styles = StyleSheet.create({
   pendingButton: {
     backgroundColor: 'transparent',
     borderRadius: 50,
+    borderWidth: 2, // Border width
+    borderColor: '#2282FF', // Border color
     padding: 7,
     margin: 5,
+    minHeight: 52,
+    minWidth: 52,
   },
 
   successIcon: {

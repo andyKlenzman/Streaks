@@ -7,9 +7,6 @@ export const uiSlice = createSlice({
   initialState,
   reducers: {
     openStreak:(state, action: PayloadAction<string>) => {
-        if(action.payload === state){
-          return ''
-        }
         return action.payload
       },
   

@@ -1,23 +1,20 @@
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import DeleteButton from './buttons/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
 import CompleteButton from './buttons/CompleteButton';
-import { getTimeUntilStatusChange, parseTime } from '../../utils/timeUtils';
+import { getTimeUntilStatusChange } from '../../utils/timeUtils';
 
 const CompleteListItem = ({ title, count, time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
-  const [remainingTime, setRemainingTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   const handleTimeOperations = () => {
     const timeUntilStatusChange = getTimeUntilStatusChange(time);
-    const { hours, minutes, seconds } = parseTime(timeUntilStatusChange);
-    setRemainingTime({ hours, minutes, seconds });
 
     //the status of the streak will be changed when time expires, and pending list item will be rendered
     if (timeUntilStatusChange.getTime() <= 0) {
@@ -46,17 +43,14 @@ const CompleteListItem = ({ title, count, time, id }: Streak) => {
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
             {title}
           </Text>
-          {/* <Text style={styles.textSecondary}>complete</Text> */}
-          <Text style={styles.textSecondary}>
-            {remainingTime.hours} hr {remainingTime.minutes} min {remainingTime.seconds} sec
-          </Text>
+          <Text style={styles.textSecondary}>complete</Text>
         </View>
         <View style={styles.dayCountAndButtonContainer}>
           <Text style={styles.dayCount}>{count}</Text>
           <CompleteButton />
         </View>
       </View>
-      {/* Hidden functionality, visible when the list item is pressed */}
+      {/* Hidden functionality, visible when the list item is pressed....*/}
       {openStreakId === id ? (
         <View style={styles.bottomContainer}>
           <DeleteButton id={id} />

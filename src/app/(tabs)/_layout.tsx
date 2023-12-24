@@ -18,8 +18,8 @@ const TabsLayout = () => {
         <Tabs
           screenOptions={{
             headerShown: false,
-            tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
-            tabBarStyle: { backgroundColor: '#FFFFFF', height: 60 },
+            // tabBarLabelStyle: { fontSize: 14, fontWeight: 'bold' },
+            // tabBarStyle: { backgroundColor: '#FFFFFF', height: 60 },
             tabBarActiveTintColor: '#2282FF',
             tabBarInactiveTintColor: '#999999',
           }}>

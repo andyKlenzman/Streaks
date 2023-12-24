@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
 import { useEffect, useState } from 'react';
 import DeleteButton from './buttons/DeleteButton';
@@ -8,25 +8,99 @@ import PendingStreakButton from './buttons/PendingStreakButton';
 import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
 import { parseTime, getTimeUntilStreakBroken } from '../../utils/timeUtils';
+import { Dimensions } from 'react-native';
+
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+} from 'react-native-reanimated';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 
 const PendingListItem = ({ title, count, time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
-  const [remainingTime, setRemainingTime] = useState({ hours: 0, minutes: 0, seconds: 0 });
+  const [subtitle, setSubtitle] = useState({ timeLeft: 0, timeInterval: 'hours' });
+  const screenWidth = Dimensions.get('window').width;
+
+  const start = useSharedValue(0);
+  const offset = useSharedValue(0);
+  const isPressed = useSharedValue(false);
+
+  const openStreakWrapper = () => {
+    dispatch(openStreak(id));
+
+    if (openStreakId === id) {
+      start.value = offset.value = -75;
+    } else {
+      start.value = offset.value = 0;
+    }
+  };
 
   const handleTimeOperations = () => {
     const dateObj = new Date(time);
     const dueDate = getTimeUntilStreakBroken(dateObj);
-    const { hours, minutes, seconds } = parseTime(dueDate);
-    setRemainingTime({ hours, minutes, seconds });
+    const { hours, minutes } = parseTime(dueDate);
+
+    if (hours > 1) {
+      setSubtitle({ timeLeft: hours, timeInterval: 'hours' });
+    } else if (hours === 1) {
+      setSubtitle({ timeLeft: hours, timeInterval: 'hours' });
+    } else {
+      setSubtitle({ timeLeft: minutes, timeInterval: 'minutes' });
+    }
 
     if (dueDate.getTime() <= 0) {
       dispatch(changeStreakStatus({ id: id, status: 'broken' }));
     }
   };
-  const handlePress = () => {
-    dispatch(openStreak(id));
-  };
+
+  const gesture = Gesture.Pan()
+    .onBegin(() => {
+      isPressed.value = true;
+    })
+    .onUpdate((e) => {
+      //may need to put a check in here so the slide animation doesnt fuck with scrolling
+      const translation = start.value + e.translationX;
+
+      if (translation < -75) {
+        offset.value = -75;
+      } else if (translation > 25) {
+        offset.value = 25;
+      } else {
+        offset.value = translation;
+      }
+
+      console.log(translation, offset.value, screenWidth / 5);
+    })
+    .onEnd(() => {
+      console.log('onEnd fire');
+      start.value = offset.value;
+    })
+    .onFinalize(() => {
+      console.log('onFirnalize fire');
+
+      const triggerOpenAnimation = offset.value < 0;
+      if (triggerOpenAnimation) {
+        runOnJS(openStreakWrapper)();
+      } else {
+        start.value = offset.value = 0;
+      }
+      isPressed.value = false;
+    });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    if (isPressed.value) {
+      return {
+        transform: [{ translateX: offset.value }],
+      };
+    } else {
+      return {
+        transform: [{ translateX: withTiming(offset.value, { duration: 100 }) }],
+      };
+    }
+  });
 
   useEffect(() => {
     handleTimeOperations();
@@ -37,29 +111,37 @@ const PendingListItem = ({ title, count, time, id }: Streak) => {
     return () => clearInterval(interval);
   }, [time]);
 
+  useEffect(() => {
+    if (openStreakId === id) {
+      start.value = offset.value = -75;
+    } else {
+      start.value = offset.value = 0;
+    }
+  }, [openStreakId]);
+
   return (
-    <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={`pending streak`}>
-      <View style={styles.topContainer}>
-        <View style={styles.textContainer}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
-            {title}
-          </Text>
-          <Text style={styles.textSecondary}>
-            {remainingTime.hours} hr {remainingTime.minutes} min {remainingTime.seconds} sec
-          </Text>
-        </View>
-        <View style={styles.dayCountAndButtonContainer}>
-          <Text style={styles.dayCount}>{count}</Text>
-          <PendingStreakButton id={id} />
-        </View>
-      </View>
-      {/* EXTENDED MENU */}
-      {openStreakId === id ? (
-        <View style={styles.bottomContainer}>
+    <GestureDetector gesture={gesture}>
+      <View>
+        <Animated.View style={[styles.topContainer, animatedStyle]}>
+          <View style={styles.textContainer}>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
+              {title}
+            </Text>
+            <Text style={styles.textSecondary}>
+              {subtitle.timeLeft} {subtitle.timeInterval} left
+            </Text>
+          </View>
+          <View style={styles.dayCountAndButtonContainer}>
+            <Text style={styles.dayCount}>{count}</Text>
+            <PendingStreakButton id={id} />
+          </View>
+        </Animated.View>
+
+        <View style={styles.deleteButtonContainer}>
           <DeleteButton id={id} />
         </View>
-      ) : null}
-    </TouchableOpacity>
+      </View>
+    </GestureDetector>
   );
 };
 
@@ -75,18 +157,9 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 15,
     paddingVertical: 10,
+    backgroundColor: 'white',
   },
-  bottomContainer: {
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: 'lightgrey',
-    width: '100%',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
+
   textContainer: {
     maxWidth: '70%',
   },
@@ -109,4 +182,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginRight: 15,
   },
+  deleteButtonContainer: {
+    position: 'absolute',
+    right: 0,
+    padding: 10,
+    backgroundColor: 'red',
+    color: 'white',
+    zIndex: -5,
+    minHeight: '100%',
+  },
 });
+
+// const newOffsetValue = Math.max(
+//   Math.max(translation, screenHeight),
+//   curtainVals.coordinates.closed,
+// );

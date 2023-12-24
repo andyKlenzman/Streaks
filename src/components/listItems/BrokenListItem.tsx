@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View,StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { Streak } from '../../shared/interfaces/streak.interface';
 import DeleteButton from './buttons/DeleteButton';
 import RetryButton from './buttons/RetryButton';

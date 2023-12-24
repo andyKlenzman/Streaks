@@ -23,13 +23,13 @@ const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const inputRef = useRef<TextInput>(null);
-  const [allowError, setAllowError] = useState(false)
+  const [allowError, setAllowError] = useState(false);
 
   // what exactly is going on here? I dont know useCallback
   useFocusEffect(
     useCallback(() => {
       return () => {
-      setAllowError(false)
+        setAllowError(false);
       };
     }, [])
   );
@@ -88,7 +88,7 @@ const CreateStreakForm = () => {
                 <TextInput
                   ref={inputRef}
                   onChangeText={(text) => {
-                    setAllowError(true)
+                    setAllowError(true);
                     setFieldValue('title', text);
                     setFieldTouched('title', true, false);
                   }}

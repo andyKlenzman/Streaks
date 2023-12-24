@@ -4,9 +4,9 @@ import { StyleSheet } from 'react-native';
 
 const CompleteButton = () => {
   return (
-    <TouchableOpacity style={styles.successIcon}>
-      <Ionicons name="md-checkmark-circle" size={32} color="green" />
-    </TouchableOpacity>
+    // <TouchableOpacity style={styles.successIcon}>
+    <Ionicons name="md-checkmark-circle" size={50} color="green" style={styles.successIcon} />
+    // </TouchableOpacity>
   );
 };
 
@@ -21,9 +21,8 @@ const styles = StyleSheet.create({
   },
 
   successIcon: {
-    backgroundColor: 'transparent',
-    borderRadius: 50,
-    padding: 7,
+    // borderRadius: 50,
+    // padding: 7,
     margin: 5,
   },
 });

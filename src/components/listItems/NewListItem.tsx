@@ -15,20 +15,19 @@ const NewListItem = ({ title, count, id }: Streak) => {
   };
 
   return (
-    <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={`pending streak`}>
+    <TouchableOpacity onPress={handlePress} role="listitem" accessibilityLabel={`new streak`}>
       <View style={styles.topContainer}>
         <View style={styles.textContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
             {title}
           </Text>
-          <Text style={styles.textSecondary}>Do your behavior and set your streak!</Text>
+          <Text style={styles.textSecondary}></Text>
         </View>
         <View style={styles.dayCountAndButtonContainer}>
           <Text style={styles.dayCount}>{count}</Text>
           <PendingStreakButton id={id} />
         </View>
       </View>
-      {/* EXTENDED MENU */}
       {openStreakId === id ? (
         <View style={styles.bottomContainer}>
           <DeleteButton id={id} />

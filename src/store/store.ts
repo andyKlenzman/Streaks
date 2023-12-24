@@ -9,6 +9,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { initialState } from '../../tests/data/testStateData';
 import uiSlice from './slices/uiSlice';
 
+
 const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
 
 const rootReducer = combineReducers({
@@ -20,8 +21,8 @@ const persistConfig = {
   key: 'root', //req
   storage: AsyncStorage, //req
   whitelist: ['streaks'], //optional
-  stateReconciler: autoMergeLevel2
-  // blacklist: ['key3', 'key4'], //for items to disclude
+  stateReconciler: autoMergeLevel2,
+  blacklist: ['ui'], //for items to disclude
   // debug
 }
 
@@ -30,7 +31,8 @@ let persistedReducer  = persistReducer(persistConfig, rootReducer);
 export let store = configureStore({
     reducer: persistedReducer,
     middleware: [thunk],
-    preloadedState: isDevelopment ? initialState : undefined 
+    //need to define what is happening here
+    preloadedState: isDevelopment ? initialState : undefined
   })  
 
 export let persistor = persistStore(store) // used in the persistor gate located at the root app layout
