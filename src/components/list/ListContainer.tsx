@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, ScrollView } from 'react-native';
 import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
 import { useAppSelector } from '../../../hooks';
@@ -29,6 +29,7 @@ const ListContainer = () => {
       }}
       keyExtractor={(item) => item.id}
       style={styles.list}
+      nestedScrollEnabled={true}
     />
   );
 };
