@@ -1,38 +1,45 @@
 import { StyleSheet } from "react-native";
 
 export const listItemStyles = StyleSheet.create({
-    topContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+    parentContainer: {
+      flexDirection: 'column',
+      alignItems: 'stretch',
+      justifyContent: 'flex-start',
       borderTopWidth: 1,
       borderColor: 'lightgrey',
       width: '100%',
       paddingHorizontal: 15,
-      paddingVertical: 10,
-      backgroundColor: 'white',
+      paddingTop: 7,
+      paddingBottom: 3,
+      backgroundColor: 'transparent',
     },
-  
+    bottomContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+      marginTop: 0
+    
+    },
     textContainer: {
-      maxWidth: '70%',
+      maxWidth: '100%',
     },
     textMain: {
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: '600',
       flexShrink: 1, // Allow text to shrink if it exceeds available space
       // Adjust the percentage based on your layout needs
     },
     textSecondary: {
-      fontSize: 20,
+      fontSize: 16,
       color: 'grey',
+      alignSelf: "baseline"
     },
     dayCountAndButtonContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
     },
     dayCount: {
-      fontSize: 24,
+      fontSize: 20,
       marginRight: 15,
     },
     deleteButtonContainer: {

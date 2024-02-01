@@ -33,16 +33,18 @@ const BrokenListItem = ({ title, count, id }: Streak) => {
       overshootFriction={8}
       onSwipeableOpen={() => dispatch(openStreak(id))}
       onSwipeableClose={() => dispatch(openStreak(''))}>
-      <View style={styles.topContainer}>
+      <View style={styles.parentContainer}>
         <View style={styles.textContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
             {title}
           </Text>
-          <Text style={styles.textSecondary}>broken</Text>
         </View>
-        <View style={styles.dayCountAndButtonContainer}>
-          <Text style={styles.dayCount}>{count}</Text>
-          <RetryButton id={id} />
+        <View style={styles.bottomContainer}>
+          <Text style={styles.textSecondary}>broken</Text>
+          <View style={styles.dayCountAndButtonContainer}>
+            <Text style={styles.dayCount}>{count}</Text>
+            <RetryButton id={id} />
+          </View>
         </View>
       </View>
     </Swipeable>

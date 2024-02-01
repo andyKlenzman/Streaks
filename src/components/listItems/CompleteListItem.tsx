@@ -54,16 +54,19 @@ const CompleteListItem = ({ title, count, time, id }: Streak) => {
       overshootFriction={8}
       onSwipeableOpen={() => dispatch(openStreak(id))}
       onSwipeableClose={() => dispatch(openStreak(''))}>
-      <View style={styles.topContainer}>
+      <View style={styles.parentContainer}>
         <View style={styles.textContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
             {title}
           </Text>
-          <Text style={styles.textSecondary}>complete</Text>
         </View>
-        <View style={styles.dayCountAndButtonContainer}>
-          <Text style={styles.dayCount}>{count}</Text>
-          <CompleteButton />
+        <View style={styles.bottomContainer}>
+          <Text style={styles.textSecondary}>complete</Text>
+
+          <View style={styles.dayCountAndButtonContainer}>
+            <Text style={styles.dayCount}>{count}</Text>
+            <CompleteButton />
+          </View>
         </View>
       </View>
     </Swipeable>

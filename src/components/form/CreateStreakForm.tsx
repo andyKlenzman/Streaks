@@ -43,7 +43,7 @@ const CreateStreakForm = () => {
   };
 
   const validationSchema = Yup.object({
-    title: Yup.string().max(30, 'Name must be at most 30 characters').required('requried'),
+    title: Yup.string().max(40, 'Name must be at most 40 characters').required('requried'),
     // partner: Yup.string().email('Invalid email'),
   });
 
@@ -79,7 +79,7 @@ const CreateStreakForm = () => {
           }) => (
             <View style={styles.formContainer}>
               <View style={styles.labelContainer}>
-                <Text>Streak name</Text>
+                <Text>Set your intention</Text>
                 {touched.title && errors.title && allowError && (
                   <Text style={{ color: 'red' }}>{errors.title}</Text>
                 )}
@@ -95,11 +95,11 @@ const CreateStreakForm = () => {
                   onBlur={handleBlur('title')}
                   value={values.title}
                   style={styles.input}
-                  placeholder={'Enter streak name here'}
-                  maxLength={30}
+                  placeholder={'Enter intention here'}
+                  maxLength={40}
                   onSubmit={handleSubmit}
                 />
-                <Text style={styles.characterCount}>{values.title.length}/30</Text>
+                <Text style={styles.characterCount}>{values.title.length}/40</Text>
               </View>
               <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>

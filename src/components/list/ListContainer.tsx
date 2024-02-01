@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, ScrollView } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
 import { useAppSelector } from '../../../hooks';
@@ -8,24 +8,33 @@ import NewListItem from '../listItems/NewListItem';
 
 const ListContainer = () => {
   const streaks = useAppSelector(selectAllStreaks);
+  const colors = ['white', '#eeeeeef5'];
 
   return (
     <FlatList
       data={streaks}
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
+        let component;
+
         switch (item.status) {
           case 'complete':
-            return <CompleteListItem {...item} />;
+            component = <CompleteListItem {...item} />;
+            break;
           case 'pending':
             if (item.count === 0) {
-              return <NewListItem {...item} />;
+              component = <NewListItem {...item} />;
+              break;
             }
-            return <PendingListItem {...item} />;
+            component = <PendingListItem {...item} />;
+            break;
           case 'broken':
-            return <BrokenListItem {...item} />;
+            component = <BrokenListItem {...item} />;
+            break;
           default:
             return null;
         }
+
+        return <View style={{ backgroundColor: colors[index % colors.length] }}>{component}</View>;
       }}
       keyExtractor={(item) => item.id}
       style={styles.list}
