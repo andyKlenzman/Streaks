@@ -3,7 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore} from 'firebase/firestore/lite';
 import { getAuth } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
-
+import { getDatabase, ref, set } from 'firebase/database';
+import {functions} from 'firebase-functions';
 
 
 // Your web app's Firebase configuration

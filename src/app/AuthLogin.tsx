@@ -16,7 +16,7 @@ const AuthLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        dispatch(updateAuth({email: user.email, isSignedIn: true}))
+        dispatch(updateAuth({email: user.email, uid:user.uid, isSignedIn: true}))
         navigation.navigate('index');
 
       })

@@ -17,13 +17,17 @@ const HomeLayout = () => {
     // console.log('AsyncStorage Purged');
   }
 
+
+
+// TODO: make sure this purges the local storage as well
+
   const logOut = async () => {
     try {
       // Await the sign-out process to complete
       await signOut(auth);
       
       // Update the app state
-      dispatch(updateAuth({ email: "", isSignedIn: false }));
+      dispatch(updateAuth({email: "", uid:"", isSignedIn: false}));
 
       // Navigate to the AuthHome screen
       navigation.navigate('AuthHome');

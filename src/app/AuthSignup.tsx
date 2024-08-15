@@ -21,8 +21,8 @@ const AuthSignup = () => {
     console.log(email, password);
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const parsedUserInfo = parseUserInfo(userCredential.user);
-        dispatch(updateAuth({email: parsedUserInfo.email, isSignedIn: true}))
+        const user = userCredential.user;
+        dispatch(updateAuth({email: user.email, uid:user.uid, isSignedIn: true}))
         navigation.navigate('index');
 
     } catch (error) {

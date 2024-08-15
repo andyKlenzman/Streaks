@@ -3,13 +3,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Auth {
   isSignedIn: boolean;
-  email: string; // Optional email field
+  email: string;
+  uid: string;
 }
 
 
 const initialState: Auth = {
   isSignedIn:false,
-  email: ""
+  email: "",
+  uid: ""
+
 }
 
 
@@ -17,12 +20,15 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    updateAuth: (state, action: PayloadAction<{ email: string, isSignedIn: boolean }>) => {
+    updateAuth: (state, action: PayloadAction<{ email: string, isSignedIn: boolean, uid: string }>) => {
       state.email = action.payload.email;
+      state.uuid =action.payload.uid;
       state.isSignedIn = action.payload.isSignedIn;
+
     },
     logOut: (state) => {
       state.email = "";
+      state.uuid ="";
       state.isSignedIn = false;
     },
   },

@@ -16,6 +16,9 @@ import { useAppDispatch } from '../../../hooks';
 import { addNewStreak } from '../../store/slices/streaksSlice';
 import { StreakFormInput } from '../../shared/interfaces/streak.interface';
 import { useNavigation } from 'expo-router';
+import { db} from '../../firebase/fbInit'; // Adjust path as necessary
+import { doc, setDoc } from "firebase/firestore"; 
+
 
 const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
@@ -23,13 +26,11 @@ const CreateStreakForm = () => {
   const inputRef = useRef<TextInput>(null);
   const [allowError, setAllowError] = useState(false);
 
-  // Reset error state when component is unfocused
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => setAllowError(false));
     return unsubscribe;
   }, [navigation]);
 
-  // Focus the input when the component mounts
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -47,10 +48,24 @@ const CreateStreakForm = () => {
     { resetForm }: FormikHelpers<StreakFormInput>
   ) => {
     try {
+      // Dispatch action to add streak
       dispatch(addNewStreak(values));
+
+      // Get a new reference for the streak in Firebase
+      const streakData = {
+        
+        
+       
+      }
+
+      // Write streak data to Firebase
+      await set(newStreakRef, values);
+
+      // Reset form and navigate
       resetForm();
       navigation.navigate('index');
     } catch (error) {
+      console.error('Error adding streak to Firebase:', error);
     }
   };
 
