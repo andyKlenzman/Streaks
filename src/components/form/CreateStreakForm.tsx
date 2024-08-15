@@ -1,3 +1,4 @@
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -7,17 +8,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  StyleSheet,
 } from 'react-native';
-import { useAppDispatch } from '../../../hooks';
-import { Formik } from 'formik';
-import { StreakFormInput } from '../../shared/interfaces/streak.interface';
-import { addNewStreak } from '../../store/slices/streaksSlice';
+import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { FormikHelpers } from 'formik';
-import { StyleSheet } from 'react-native';
-import { useNavigation } from 'expo-router/src/useNavigation';
-import { useEffect, useRef, useCallback, useState } from 'react';
-import { useFocusEffect } from 'expo-router';
+import { useAppDispatch } from '../../../hooks';
+import { addNewStreak } from '../../store/slices/streaksSlice';
+import { StreakFormInput } from '../../shared/interfaces/streak.interface';
+import { useNavigation } from 'expo-router';
 
 const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
@@ -25,26 +23,23 @@ const CreateStreakForm = () => {
   const inputRef = useRef<TextInput>(null);
   const [allowError, setAllowError] = useState(false);
 
-  // what exactly is going on here? I dont know useCallback
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        setAllowError(false);
-      };
-    }, [])
-  );
+  // Reset error state when component is unfocused
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => setAllowError(false));
+    return unsubscribe;
+  }, [navigation]);
 
+  // Focus the input when the component mounts
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const initialValues: StreakFormInput = {
-    title: '',
-  };
+  const initialValues: StreakFormInput = { title: '' };
 
   const validationSchema = Yup.object({
-    title: Yup.string().max(40, 'Name must be at most 40 characters').required('requried'),
-    // partner: Yup.string().email('Invalid email'),
+    title: Yup.string()
+      .max(40, 'Name must be at most 40 characters')
+      .required('Required'),
   });
 
   const onSubmit = async (
@@ -54,19 +49,22 @@ const CreateStreakForm = () => {
     try {
       dispatch(addNewStreak(values));
       resetForm();
-      navigation.navigate('streaks');
-    } catch (error) {}
+      navigation.navigate('index');
+    } catch (error) {
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
+        style={styles.container}
+      >
         <Formik
           initialValues={initialValues}
           onSubmit={onSubmit}
-          validationSchema={validationSchema}>
+          validationSchema={validationSchema}
+        >
           {({
             handleChange,
             handleBlur,
@@ -81,7 +79,7 @@ const CreateStreakForm = () => {
               <View style={styles.labelContainer}>
                 <Text>Set your intention</Text>
                 {touched.title && errors.title && allowError && (
-                  <Text style={{ color: 'red' }}>{errors.title}</Text>
+                  <Text style={styles.errorText}>{errors.title}</Text>
                 )}
               </View>
               <View style={styles.inputContainer}>
@@ -95,9 +93,9 @@ const CreateStreakForm = () => {
                   onBlur={handleBlur('title')}
                   value={values.title}
                   style={styles.input}
-                  placeholder={'Enter intention here'}
+                  placeholder="Enter intention here"
                   maxLength={40}
-                  onSubmit={handleSubmit}
+                  onSubmitEditing={handleSubmit}
                 />
                 <Text style={styles.characterCount}>{values.title.length}/40</Text>
               </View>
@@ -148,7 +146,7 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   inputContainer: {
-    flexDirection: 'row', // Align input and character count horizontally
+    flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
   },
@@ -164,12 +162,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  cancelButton: {
-    backgroundColor: 'orange',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    marginTop: 15,
-    borderRadius: 5,
+  errorText: {
+    color: 'red',
   },
   buttonContainer: {
     flexDirection: 'row',

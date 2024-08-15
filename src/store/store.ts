@@ -1,48 +1,55 @@
 import { configureStore } from '@reduxjs/toolkit';
-import AsyncStorage from 
-'@react-native-async-storage/async-storage'; //Can only store string data
-import { persistStore, persistReducer } from 'redux-persist'
-import thunk from 'redux-thunk'
-import { PreloadedState, combineReducers} from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { persistStore, persistReducer } from 'redux-persist';
+import thunk from 'redux-thunk';
+import { combineReducers, PreloadedState } from '@reduxjs/toolkit';
 import streaksSlice from './slices/streaksSlice';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { initialState } from '../../tests/data/testStateData';
 import uiSlice from './slices/uiSlice';
+import authSlice from './slices/authSlice';
 
+// Combine reducers
+const rootReducer = combineReducers({
+  streaks: streaksSlice,
+  ui: uiSlice,
+  auth: authSlice,
+});
 
 const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
 
-const rootReducer = combineReducers({
-  streaks: streaksSlice,
-  ui: uiSlice
+
+// Persist configuration
+const persistConfig = {
+  key: 'root',
+  storage: AsyncStorage,
+  whitelist: ['streaks', 'auth'], // Persist 'streaks' and 'auth' slices
+  blacklist: ['ui'], // Do not persist 'ui' slice
+  stateReconciler: autoMergeLevel2,
+};
+
+// Create persisted reducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Configure store with persisted reducer
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+  preloadedState: isDevelopment ? initialState : undefined,
 });
 
-const persistConfig = {
-  key: 'root', //req
-  storage: AsyncStorage, //req
-  whitelist: ['streaks'], //optional
-  stateReconciler: autoMergeLevel2,
-  blacklist: ['ui'], //for items to disclude
-  // debug
-}
+// Create persistor
+export const persistor = persistStore(store);
 
-let persistedReducer  = persistReducer(persistConfig, rootReducer);
-
-export let store = configureStore({
-    reducer: persistedReducer,
-    middleware: [thunk],
-    //need to define what is happening here
-    preloadedState: isDevelopment ? initialState : undefined
-  })  
-
-export let persistor = persistStore(store) // used in the persistor gate located at the root app layout
-
+// Optional: Setup store function for non-persistent use cases
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
-    return configureStore({
-      reducer: rootReducer,
-      preloadedState: preloadedState
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState,
   });
-  };
-export type AppStore = ReturnType<typeof setupStore> //this the the type returned by return setup store
-export type RootState = ReturnType<typeof rootReducer>
+};
+
+// TypeScript types
+export type AppStore = ReturnType<typeof setupStore>;
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
