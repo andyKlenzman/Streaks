@@ -1,10 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getFirestore} from 'firebase/firestore/lite';
-import { getAuth } from "firebase/auth";
+import { getFirestore, connectFirestoreEmulator} from 'firebase/firestore/lite';
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
 import { getDatabase, ref, set } from 'firebase/database';
-import {functions} from 'firebase-functions';
 
 
 // Your web app's Firebase configuration
@@ -28,3 +27,11 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider();
+
+
+
+// Firestore initialisieren und mit dem Emulator verbinden
+connectFirestoreEmulator(db, "localhost", 8080);
+
+// Auth initialisieren und mit dem Emulator verbinden
+connectAuthEmulator(auth, "http://localhost:9099");
