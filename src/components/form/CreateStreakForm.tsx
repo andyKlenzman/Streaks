@@ -13,12 +13,9 @@ import {
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch } from '../../../hooks';
-import { addNewStreak } from '../../store/slices/streaksSlice';
-import { StreakFormInput } from '../../shared/interfaces/streak.interface';
+import { Streak, StreakFormInput } from '../../shared/interfaces/general.interface';
 import { useNavigation } from 'expo-router';
-import { db} from '../../firebase/fbInit'; // Adjust path as necessary
-import { doc, setDoc } from "firebase/firestore"; 
-
+import { submitNewStreak } from '../../store/slices/streaksSlice';
 
 const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
@@ -48,26 +45,17 @@ const CreateStreakForm = () => {
     { resetForm }: FormikHelpers<StreakFormInput>
   ) => {
     try {
-      // Dispatch action to add streak
-      dispatch(addNewStreak(values));
-
-      // Get a new reference for the streak in Firebase
-      const streakData = {
-        
-        
-       
-      }
-
-      // Write streak data to Firebase
-      await set(newStreakRef, values);
-
-      // Reset form and navigate
+      // Thunk dispatchen
+      await dispatch(submitNewStreak(values));
+  
+      // Formular zurücksetzen und Navigation
       resetForm();
       navigation.navigate('index');
     } catch (error) {
-      console.error('Error adding streak to Firebase:', error);
+      console.error('Error submitting streak:', error);
     }
   };
+  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

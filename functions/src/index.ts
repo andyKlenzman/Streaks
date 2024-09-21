@@ -43,7 +43,3 @@ exports.deleteUserDoc = functions.auth.user().onDelete(async (user) => {
     functions.logger.error('Error occurred while deleting user document:', error);
   }
 });
-
-
-
-//ToDo add 

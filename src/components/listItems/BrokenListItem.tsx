@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/streak.interface';
+import { Streak } from '../../shared/interfaces/general.interface';
 import { useEffect } from 'react';
 import DeleteButton from './buttons/DeleteButton';
 import { useAppDispatch, useAppSelector } from '../../../hooks';

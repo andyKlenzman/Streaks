@@ -1,7 +1,7 @@
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import RetryButton from './buttons/RetryButton';
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/streak.interface';
+import { Streak } from '../../shared/interfaces/general.interface';
 import { useEffect } from 'react';
 import DeleteButton from './buttons/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
@@ -12,7 +12,7 @@ import CompleteButton from './buttons/CompleteButton';
 import { getTimeUntilStatusChange } from '../../utils/timeUtils';
 import { listItemStyles as styles } from './listItemStyles';
 
-const CompleteListItem = ({ title, count, time, id }: Streak) => {
+const CompleteListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
 

@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/streak.interface';
+import { Streak } from '../../shared/interfaces/general.interface';
 import { useEffect, useState } from 'react';
 import DeleteButton from './buttons/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
@@ -11,7 +11,7 @@ import { parseTime, getTimeUntilStreakBroken } from '../../utils/timeUtils';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { listItemStyles as styles } from './listItemStyles';
 
-const PendingListItem = ({ title, count, time, id }: Streak) => {
+const PendingListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
   const [subtitle, setSubtitle] = useState({ timeLeft: 0, timeInterval: 'hours' });

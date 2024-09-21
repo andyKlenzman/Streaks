@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 import { combineReducers, PreloadedState } from '@reduxjs/toolkit';
 import streaksSlice from './slices/streaksSlice';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import { initialState } from '../../tests/data/testStateData';
 import uiSlice from './slices/uiSlice';
 import authSlice from './slices/authSlice';
 
@@ -35,7 +34,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
-  preloadedState: isDevelopment ? initialState : undefined,
+  preloadedState: undefined,
 });
 
 // Create persistor

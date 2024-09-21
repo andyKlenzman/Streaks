@@ -4,36 +4,51 @@ import { Button } from 'react-native';
 import { useAppDispatch } from '../../hooks';
 import { updateAuth } from '../store/slices/authSlice';
 import { useNavigation } from 'expo-router';
-import { signOut } from 'firebase/auth'; // Update import path for Firebase Auth
+import { signOut, deleteUser } from 'firebase/auth'; // Import deleteUser
 import { auth } from '../firebase/fbInit';
+import { store } from '../store/store';
 
 const HomeLayout = () => {
   const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
 
+
+  console.log(store.getState())
+
   if (isDevelopment) {
     // persistor.purge();
     // console.log('AsyncStorage Purged');
   }
 
-
-
-// TODO: make sure this purges the local storage as well
-
   const logOut = async () => {
     try {
-      // Await the sign-out process to complete
       await signOut(auth);
-      
-      // Update the app state
       dispatch(updateAuth({email: "", uid:"", isSignedIn: false}));
-
-      // Navigate to the AuthHome screen
       navigation.navigate('AuthHome');
     } catch (error) {
       console.error('Sign out error:', error);
-      // Handle sign out errors (e.g., show a user-friendly message)
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      // Get the current user
+      const user = auth.currentUser;
+
+      if (user) {
+        // Delete the user's account
+        await deleteUser(user);
+
+        // Optionally sign out after account deletion
+        dispatch(updateAuth({email: "", uid: "", isSignedIn: false}));
+        navigation.navigate('AuthHome');
+      } else {
+        console.error('No user is currently signed in.');
+      }
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      // Handle account deletion errors (e.g., show a user-friendly message)
     }
   };
 
@@ -54,8 +69,13 @@ const HomeLayout = () => {
       </Link>
       <Button
         title='Logout'
-        color='red' // Button component's color prop should be used instead of style
+        color='red'
         onPress={logOut}
+      />
+      <Button
+        title='Delete Account'
+        color='red'
+        onPress={deleteAccount}  // Updated onPress to call deleteAccount
       />
     </>
   );

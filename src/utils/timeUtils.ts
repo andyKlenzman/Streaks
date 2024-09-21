@@ -2,7 +2,7 @@
  * 
  *Okay so this is why all of this stuff isconfusing... It is all a different type. They should all take a date object, unless otherwise needed. 
  */
-import { ISOtimestamp } from "../shared/interfaces/streak.interface";
+import { ISOtimestamp } from "../shared/interfaces/general.interface";
 import { isValidISOtimestamp } from "../shared/utils/isISOtimestamp";
 
 

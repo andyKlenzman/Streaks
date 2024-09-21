@@ -1,4 +1,4 @@
-import { ISOtimestamp } from "../interfaces/streak.interface";
+import { ISOtimestamp } from "../interfaces/general.interface";
 
 
 export const isValidISOtimestamp = (value: string): value is ISOtimestamp => {
