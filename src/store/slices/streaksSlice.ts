@@ -11,32 +11,69 @@ const initialState: StreaksState = {
 
 
 
-
 export const fetchStreaks = createAsyncThunk(
   'streaks/fetchStreaks',
   async (_, { rejectWithValue, getState, dispatch }) => {
     try {
+      // Abrufen des States und der UUID
       const state = getState() as RootState; 
       const uuid = state.auth.uuid; 
 
+      if (!uuid) {
+        throw new Error("UUID is missing. Please ensure the user is authenticated.");
+      }
+
+      console.log("Fetching streaks for UUID:", uuid);
+
+      // Firebase Query erstellen
       const q = query(collection(db, "streaks"), where("uuid", "==", uuid));
-      const querySnapshot = await getDocs(q);
       
+      let querySnapshot;
+      try {
+        querySnapshot = await getDocs(q); // Daten abrufen
+      } catch (dbError) {
+        throw new Error(`Error querying Firebase: ${dbError.message}`);
+      }
+
+      if (querySnapshot.empty) {
+        console.warn(`No streaks found for UUID: ${uuid}`);
+      }
+
       const streaks: Streak[] = [];
-      
+
       querySnapshot.forEach((doc) => {
-        streaks.push({ id: doc.id, ...doc.data() } as Streak);
+        try {
+          const data = doc.data();
+          if (!data) {
+            throw new Error(`No data found for document with ID: ${doc.id}`);
+          }
+          streaks.push({ id: doc.id, ...data } as Streak);
+        } catch (docError) {
+          console.error(`Error processing document with ID: ${doc.id}:`, docError);
+        }
       });
 
-      dispatch(updateStreaksFromBackend(streaks))
-      
+      console.log("Fetched streaks:", streaks);
+
+      // Daten im Redux Store aktualisieren
+      dispatch(updateStreaksFromBackend(streaks));
+
       return streaks; // Erfolgreiche Rückgabe der Streak-Daten
     } catch (error) {
-      console.error('Error fetching streaks from Firebase:', error);
-      return rejectWithValue(error.message);
+      // Umfassende Fehlerbehandlung
+      console.error('Error fetching streaks:', error);
+      
+      let errorMessage = 'An unknown error occurred while fetching streaks.';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   }
 );
+
 
 // createAsyncThunk für das Hinzufügen eines neuen Streaks
 export const submitNewStreak = createAsyncThunk(
@@ -82,63 +119,62 @@ export const submitNewStreak = createAsyncThunk(
 );
 
 
-// Slice definition
 export const streaksSlice = createSlice({
   name: 'streaks',
   initialState,
   reducers: {
     addNewStreak: (state, action: PayloadAction<Streak>) => {
-      console.log("State in the addNewStreak: ", state)
       state.streaks.push(action.payload);
     },
     updateStreaksFromBackend: (state, action: PayloadAction<Streak[]>) => {
-      console.log("updateStreaksFromBackend. Payload: ", action.payload)
       state.streaks = action.payload;
-
-
     },
     deleteStreak: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      console.log(action.payload, state)
-
-      
       const index = state.streaks.findIndex((streak) => streak.id === id);
+
       if (index !== -1) {
-        state.streaks.splice(index, 1) }
+        state.streaks.splice(index, 1);
+      }
+      
+      state.status = "idle" //ToDo: setzen status structure durch um backend kommunikation Ablauf zu verwalten
     },
     changeStreakStatus: (state, action: PayloadAction<{ id: string, status: StreakStatus }>) => {
       const { id, status } = action.payload;
       const index = state.streaks.findIndex((streak) => streak.id === id);
 
-      // TODo: irgendwie das fixieren 
       if (index !== -1) {
-        state.streaks[index] = { ...state[index], status };
+        const updatedStreak = { ...state.streaks[index], status };
+        state.streaks[index] = updatedStreak;
       }
     },
     completeStreak: (state, action: PayloadAction<string>) => {
       const currentUtcTimestamp = new Date().toISOString();
-      const index = state.findIndex((streak) => streak.id === action.payload);
+      const index = state.streaks.findIndex((streak) => streak.id === action.payload);
+
       if (index !== -1) {
-        const updatedStreak: Streak = {
-          ...state[index],
+        const updatedStreak = {
+          ...state.streaks[index],
           lastTimeUpdated: currentUtcTimestamp,
-          count: state[index].count + 1,
+          count: state.streaks[index].count + 1,
           status: 'complete',
         };
-        state[index] = updatedStreak;
+
+        state.streaks[index] = updatedStreak;
       }
     },
     retryStreak: (state, action: PayloadAction<string>) => {
       const currentUtcTimestamp = new Date().toISOString();
-      const index = state.findIndex((streak) => streak.id === action.payload);
+      const index = state.streaks.findIndex((streak) => streak.id === action.payload);
+
       if (index !== -1) {
-        const updatedStreak: Streak = {
-          ...state[index],
+        const updatedStreak = {
+          ...state.streaks[index],
           lastTimeUpdated: currentUtcTimestamp,
           count: 0,
           status: 'pending',
         };
-        state[index] = updatedStreak;
+        state.streaks[index] = updatedStreak;
       }
     },
   },
@@ -149,7 +185,7 @@ export const streaksSlice = createSlice({
       })
       .addCase(fetchStreaks.fulfilled, (state, action: PayloadAction<Streak[]>) => {
         state.status = 'succeeded';
-        state = action.payload;
+        state.streaks = action.payload;  // Fixed this line, was reassigning `state` incorrectly
       })
       .addCase(fetchStreaks.rejected, (state, action) => {
         state.status = 'failed';
@@ -157,6 +193,7 @@ export const streaksSlice = createSlice({
       });
   },
 });
+
 
 // Export actions and reducer
 export const { addNewStreak, deleteStreak, changeStreakStatus, completeStreak, retryStreak, updateStreaksFromBackend } = streaksSlice.actions;

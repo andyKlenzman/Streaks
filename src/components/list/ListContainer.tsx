@@ -19,8 +19,9 @@ const ListContainer = () => {
     console.log("Running useEffect in ListContainer. Status: ", status)
 
     if (status === 'idle') {
-      dispatch(fetchStreaks);
+      dispatch(fetchStreaks());
     }
+
 
 
   }, [status, dispatch]);

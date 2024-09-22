@@ -5,26 +5,22 @@ import thunk from 'redux-thunk';
 import { combineReducers, PreloadedState } from '@reduxjs/toolkit';
 import streaksSlice from './slices/streaksSlice';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import uiSlice from './slices/uiSlice';
 import authSlice from './slices/authSlice';
 
-// Combine reducers
 const rootReducer = combineReducers({
   streaks: streaksSlice,
   ui: uiSlice,
   auth: authSlice,
 });
 
-const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
-
-
-// Persist configuration
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   whitelist: ['streaks', 'auth'], // Persist 'streaks' and 'auth' slices
-  blacklist: ['ui'], // Do not persist 'ui' slice
-  stateReconciler: autoMergeLevel2,
+  blacklist: ['ui'],
+  stateReconciler: autoMergeLevel1, //wtf macht es eigentlich
 };
 
 // Create persisted reducer
