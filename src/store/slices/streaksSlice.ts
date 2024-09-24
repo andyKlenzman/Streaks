@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Streak, StreaksState, StreakStatus } from '../../shared/interfaces/general.interface';
 import { db } from '../../firebase/fbInit';
-import { collection, query, where, getDocs, setDoc, doc } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc , deleteDoc} from "firebase/firestore";
 // Define initial state
 const initialState: StreaksState = {
   streaks: [], // Assuming you store streaks in an array
@@ -114,6 +114,29 @@ export const submitNewStreak = createAsyncThunk(
       return rejectWithValue(error.message);
 
       //ToDo: fügen Kapitenz arbeit zu reinigen, wenn es nicht funktionert. Vielliecht den Daten in Firestore zu Löschen, yum Biespiel. 
+    }
+  }
+);
+
+
+
+export const deleteStreakBackend = createAsyncThunk(
+  'streaks/deleteStreakBackend',
+  async (streakId: string, { dispatch, rejectWithValue }) => {
+    try {
+      
+      const streakRef = doc(db, "streaks", streakId); // Verweis auf 
+
+      // Lösche die Streak in Firebase
+      await deleteDoc(streakRef);
+
+      // Die Streak auch in Redux löschen
+      dispatch(deleteStreak(streakId));
+
+      return streakId; // Erfolg: Rückgabe der gelöschten Streak-ID
+    } catch (error) {
+      console.error('Error deleting streak from Firebase:', error);
+      return rejectWithValue(error.message);
     }
   }
 );

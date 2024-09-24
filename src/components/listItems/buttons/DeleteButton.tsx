@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet } from 'react-native';
-import { deleteStreak } from '../../../store/slices/streaksSlice';
+import { deleteStreak, deleteStreakBackend } from '../../../store/slices/streaksSlice';
 import { useAppDispatch } from '../../../../hooks';
 
 interface DeleteButtonProps {
@@ -11,7 +11,7 @@ interface DeleteButtonProps {
 const DeleteButton: FC<DeleteButtonProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
-    dispatch(deleteStreak(id));
+    dispatch(deleteStreakBackend(id));
   };
 
   return (
