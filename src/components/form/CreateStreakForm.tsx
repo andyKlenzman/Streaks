@@ -13,7 +13,7 @@ import {
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch } from '../../../hooks';
-import { Streak, StreakFormInput } from '../../shared/interfaces/general.interface';
+import { Streak, StreakFormInput } from '../../shared/interfaces/streak.interface';
 import { useNavigation } from 'expo-router';
 import { submitNewStreak } from '../../store/slices/streaksSlice';
 

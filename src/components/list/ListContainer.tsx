@@ -1,41 +1,44 @@
+// Import necessary modules
 import React, { useEffect } from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
 import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
-import { useAppSelector, useAppDispatch } from '../../../hooks'; // Assumes you have hooks for dispatch and selector
-import  {fetchStreaks} from '../../store/slices/streaksSlice'; 
-import { selectAllStreaks } from '../../store/selectors/selectAllStreaks'; // Assuming you have this selector
+import { useAppSelector, useAppDispatch } from '../../../hooks'; 
+import { fetchStreaks } from '../../store/slices/streaksSlice'; 
+import { selectAllStreaks } from '../../store/selectors/selectAllStreaks'; 
 import CompleteListItem from '../listItems/CompleteListItem';
 import NewListItem from '../listItems/NewListItem';
 
 const ListContainer = () => {
   const dispatch = useAppDispatch();
   const streaks = useAppSelector(selectAllStreaks);
-  const status = useAppSelector((state) => state.streaks.status); // Get the loading status
-  const error = useAppSelector((state) => state.streaks.error); // Get any error if exists
+  const status = useAppSelector((state) => state.streaks.status); 
+  const error = useAppSelector((state) => state.streaks.error); 
   
-  // Dispatch fetchStreaks when component mounts
   useEffect(() => {
-    console.log("Running useEffect in ListContainer. Status: ", status)
-
     if (status === 'idle') {
       dispatch(fetchStreaks());
     }
-
-
-
   }, [status, dispatch]);
 
   const colors = ['white', '#eeeeeef5'];
 
   // Handle loading state
   if (status === 'loading') {
-    return <Text>Loading streaks...</Text>;
+    return (
+      <View style={styles.list}>
+        <Text style={styles.text}>Loading streaks...</Text>
+      </View>
+    );
   }
 
   // Handle error state
   if (status === 'failed') {
-    return <Text>Error fetching streaks: {error}</Text>;
+    return (
+      <View style={styles.list}>
+        <Text style={styles.text}>Error fetching streaks: {error}</Text>
+      </View>
+    );
   }
 
   return (
@@ -62,7 +65,11 @@ const ListContainer = () => {
             return null;
         }
 
-        return <View style={{ backgroundColor: colors[index % colors.length] }}>{component}</View>;
+        return (
+          <View style={{ backgroundColor: colors[index % colors.length] }}>
+            {component}
+          </View>
+        );
       }}
       keyExtractor={(item) => item.id}
       style={styles.list}
@@ -76,5 +83,12 @@ export default ListContainer;
 const styles = StyleSheet.create({
   list: {
     width: '100%',
+  },
+  text: {
+    fontSize: 16,
+    textAlign: 'center',
+    padding: 20,
+    backgroundColor: '#f9f9f9',
+    color: '#333',
   },
 });

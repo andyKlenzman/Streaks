@@ -1,7 +1,7 @@
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import RetryButton from './buttons/RetryButton';
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/general.interface';
+import { Streak } from '../../shared/interfaces/streak.interface';
 import { useEffect } from 'react';
 import DeleteButton from './buttons/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
@@ -40,7 +40,6 @@ const CompleteListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) =
   }, [time]);
 
   const renderRightActions = () => {
-    // Your content for right swipe
     return (
       <View style={styles.deleteButtonContainer}>
         <DeleteButton id={id} />
@@ -62,7 +61,6 @@ const CompleteListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) =
         </View>
         <View style={styles.bottomContainer}>
           <Text style={styles.textSecondary}>complete</Text>
-
           <View style={styles.dayCountAndButtonContainer}>
             <Text style={styles.dayCount}>{count}</Text>
             <CompleteButton />

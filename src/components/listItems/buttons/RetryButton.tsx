@@ -2,7 +2,7 @@ import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAppDispatch } from '../../../../hooks';
 import { retryStreak } from '../../../store/slices/streaksSlice';
-import { buttonStyles as styles } from '../buttonStyles';
+import { buttonStyles as styles } from './buttonStyles';
 
 interface ListButtonProps {
   id: string;

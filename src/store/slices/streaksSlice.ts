@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Streak, StreaksState, StreakStatus } from '../../shared/interfaces/general.interface';
+import { Streak, StreaksState, StreakStatus } from '../../shared/interfaces/streak.interface';
 import { db } from '../../firebase/fbInit';
 import { collection, query, where, getDocs, setDoc, doc , deleteDoc} from "firebase/firestore";
 // Define initial state
@@ -10,7 +10,6 @@ const initialState: StreaksState = {
 };
 
 
-
 export const fetchStreaks = createAsyncThunk(
   'streaks/fetchStreaks',
   async (_, { rejectWithValue, getState, dispatch }) => {
@@ -19,7 +18,8 @@ export const fetchStreaks = createAsyncThunk(
       const state = getState() as RootState; 
       const uuid = state.auth.uuid; 
 
-      if (!uuid) {
+      if (!uuid)
+      {
         throw new Error("UUID is missing. Please ensure the user is authenticated.");
       }
 
@@ -30,7 +30,7 @@ export const fetchStreaks = createAsyncThunk(
       
       let querySnapshot;
       try {
-        querySnapshot = await getDocs(q); // Daten abrufen
+        querySnapshot = await getDocs(q); 
       } catch (dbError) {
         throw new Error(`Error querying Firebase: ${dbError.message}`);
       }

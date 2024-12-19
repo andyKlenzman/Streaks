@@ -1,0 +1,14 @@
+
+
+
+-----------------------------------------
+<T extends StreakBase>(streak: T): T {
+
+T ist der Name des generischen Typs. Du kannst T durch einen beliebigen Namen ersetzen, aber T ist konventionell.
+Der Ausdruck T extends StreakBase schränkt T ein, sodass nur Typen erlaubt sind, die von der Schnittstelle StreakBase abgeleitet sind oder kompatibel mit StreakBase sind.
+
+export function processStreak<T extends StreakBase>(streak: T): T {
+  console.log(`Processing streak ${streak.title}`);
+  // Weitere generische Logik
+  return streak;
+}

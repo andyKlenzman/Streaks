@@ -1,84 +1,60 @@
-import { Redirect, Link } from 'expo-router';
+import { Link } from 'expo-router';
 import ListContainer from '../components/list/ListContainer';
-import { Button } from 'react-native';
+import { Button, View, StyleSheet } from 'react-native';
 import { useAppDispatch } from '../../hooks';
-import { updateAuth } from '../store/slices/authSlice';
 import { useNavigation } from 'expo-router';
-import { signOut, deleteUser } from 'firebase/auth'; // Import deleteUser
-import { auth } from '../firebase/fbInit';
-import { store } from '../store/store';
+import { logOut, deleteAccount } from '../utils/auth/authActions';  // Import from new file
 
 const HomeLayout = () => {
-  const isDevelopment = process.env.EXPO_PUBLIC_ENV === 'development';
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
 
-
-  console.log(store.getState())
-
-  if (isDevelopment) {
-    // persistor.purge();
-    // console.log('AsyncStorage Purged');
-  }
-
-  const logOut = async () => {
-    try {
-      await signOut(auth);
-      dispatch(updateAuth({email: "", uid:"", isSignedIn: false}));
-      navigation.navigate('AuthHome');
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
-  };
-
-  const deleteAccount = async () => {
-    try {
-      // Get the current user
-      const user = auth.currentUser;
-
-      if (user) {
-        // Delete the user's account
-        await deleteUser(user);
-
-        // Optionally sign out after account deletion
-        dispatch(updateAuth({email: "", uid: "", isSignedIn: false}));
-        navigation.navigate('AuthHome');
-      } else {
-        console.error('No user is currently signed in.');
-      }
-    } catch (error) {
-      console.error('Account deletion error:', error);
-      // Handle account deletion errors (e.g., show a user-friendly message)
-    }
-  };
-
+  
   return (
-    <>
+    <View style={styles.container}>
       <ListContainer />
-      <Link
-        href="/create"
-        style={{
-          marginTop: 20,
-          padding: 10,
-          backgroundColor: 'blue',
-          color: 'white',
-          borderRadius: 5,
-        }}
-      >
-        Create
-      </Link>
-      <Button
-        title='Logout'
-        color='red'
-        onPress={logOut}
-      />
-      <Button
-        title='Delete Account'
-        color='red'
-        onPress={deleteAccount}  // Updated onPress to call deleteAccount
-      />
-    </>
+      <View style={styles.footer}>
+        <Link
+          href="/create"
+          style={styles.linkButton}
+        >
+          Create
+        </Link>
+        <Button
+          title='Logout'
+          onPress={() => logOut(dispatch, navigation)}  // Use modularized function
+        />
+        <Button
+          title='Delete Account'
+          onPress={() => deleteAccount(dispatch, navigation)}  // Use modularized function
+        />
+      </View>
+    </View>
   );
 };
 
+
+
 export default HomeLayout;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#f8f8f8',
+    padding: 10,
+  },
+  linkButton: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: 'blue',
+    color: 'white',
+    borderRadius: 5,
+    textAlign: 'center',
+  },
+});

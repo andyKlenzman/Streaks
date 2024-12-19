@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/general.interface';
+import { Streak } from '../../shared/interfaces/streak.interface';
 import { useEffect, useState } from 'react';
 import DeleteButton from './buttons/DeleteButton';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
@@ -24,7 +24,7 @@ const PendingListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) =>
     if (hours > 1) {
       setSubtitle({ timeLeft: hours, timeInterval: 'hours' });
     } else if (hours === 1) {
-      setSubtitle({ timeLeft: hours, timeInterval: 'hours' });
+      setSubtitle({ timeLeft: hours, timeInterval: 'hour' });
     } else {
       setSubtitle({ timeLeft: minutes, timeInterval: 'minutes' });
     }

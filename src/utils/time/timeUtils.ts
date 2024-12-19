@@ -1,7 +1,3 @@
-/**
- * 
- *Okay so this is why all of this stuff isconfusing... It is all a different type. They should all take a date object, unless otherwise needed. 
- */
 import { ISOtimestamp } from "../shared/interfaces/general.interface";
 import { isValidISOtimestamp } from "../shared/utils/isISOtimestamp";
 
@@ -12,20 +8,41 @@ export const calcTimeDifference = (time:Date): Date => {
     return timeDifference
 }
 
-export const getTimeUntilStreakBroken = (time:Date): Date => {
+
+/**
+ * Local Function
+ * Function returns the amount of time until the next due date.
+ * 
+ */
+export const getTimeUntilStreakBroken = (lastTimeCompleted:ISOtimestamp): Date => {
     let dueDate: Date
-    if(time.getHours() <= 2){
-        time.setDate(time.getDate() + 1)
-        time.setHours(2, 0, 0, 0)
-        dueDate = time
+
+    // if the last streak was completed before 2 am, set the due date until
+    if(lastTimeCompleted.getHours() <= 2){
+        lastTimeCompleted.setDate(lastTimeCompleted.getDate() + 1)
+        lastTimeCompleted.setHours(2, 0, 0, 0)
+        dueDate = lastTimeCompleted
     } else {
-        time.setDate(time.getDate() +2)
-        time.setHours(2, 0, 0, 0)
-        dueDate = time
+        lastTimeCompleted.setDate(lastTimeCompleted.getDate() +2)
+        lastTimeCompleted.setHours(2, 0, 0, 0)
+        dueDate = lastTimeCompleted
     }
     dueDate = calcTimeDifference(dueDate)
     return dueDate
   }
+
+
+/**
+ * Shared Function
+ * Function returns the amount of time until the next due date. 
+ */
+export const getNextDueDate()
+{
+
+
+
+
+}
 
   export const getTimeUntilStatusChange = (time:ISOtimestamp) => {
     let timeObj = new Date(time)

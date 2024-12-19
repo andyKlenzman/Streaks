@@ -1,4 +1,4 @@
-import { InteractionManager, ViewStyle } from "react-native";
+import { ViewStyle } from "react-native";
 
 export const PADDING = 8;
 export const MARGIN = 8;
