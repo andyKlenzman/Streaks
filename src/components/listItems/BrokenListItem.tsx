@@ -1,52 +1,34 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/streak.interface';
-import { useEffect } from 'react';
-import DeleteButton from './buttons/DeleteButton';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
-import { openStreak } from '../../store/slices/uiSlice';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { selectOpenStreak, openStreak } from '../../store/slices/uiSlice';
+import DeleteButton from './buttons/DeleteButton';
 import RetryButton from './buttons/RetryButton';
-import { listItemStyles as styles } from './listItemStyles';
+import ListItem from './ListItem';
 
-const BrokenListItem = ({ title, count, id }: Streak) => {
+const BrokenListItem = ({ title, count, id }) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
 
   useEffect(() => {
     if (id !== openStreakId) {
+      // Your additional logic
     }
   }, [openStreakId]);
 
-  const renderRightActions = () => {
-    return (
-      <View style={styles.deleteButtonContainer}>
-        <DeleteButton id={id} />
-      </View>
-    );
-  };
+  const renderRightActions = () => (
+    <DeleteButton id={id} />
+  );
 
   return (
-    <Swipeable
+    <ListItem
+      title={title}
+      count={count}
+      subtitle="broken"
       renderRightActions={renderRightActions}
-      overshootFriction={8}
+      renderActionButton={() => <RetryButton id={id} />}
       onSwipeableOpen={() => dispatch(openStreak(id))}
-      onSwipeableClose={() => dispatch(openStreak(''))}>
-      <View style={styles.parentContainer}>
-        <View style={styles.textContainer}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
-            {title}
-          </Text>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.textSecondary}>broken</Text>
-          <View style={styles.dayCountAndButtonContainer}>
-            <Text style={styles.dayCount}>{count}</Text>
-            <RetryButton id={id} />
-          </View>
-        </View>
-      </View>
-    </Swipeable>
+      onSwipeableClose={() => dispatch(openStreak(''))}
+    />
   );
 };
 

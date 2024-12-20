@@ -1,0 +1,33 @@
+import { ParsedTime } from "../../shared/interfaces/time.interfaces";  
+
+
+export const parseTime = (time: Date): ParsedTime => {
+    const timeUTC = time.getTime()
+    const totalSeconds = Math.floor(timeUTC / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+  
+    return {
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds
+    };
+  
+  }
+
+
+  /**
+ * Calculates the time difference between two timestamps and returns it as an object.
+ * @param startTime - The starting time as a number (e.g., `Date.getTime()`).
+ * @param endTime - The ending time as a number (e.g., `Date.getTime()`).
+ * @returns A Date object representing the difference in time.
+ */
+export const getTimeDifference = (startTime: number, endTime: number): Date => {
+  const deltaMilliseconds = Math.abs(endTime - startTime); // Ensure positive difference
+  const deltaDate = new Date(deltaMilliseconds);
+
+  // Normalize the Date object to reflect the difference (UTC time to local offset)
+  deltaDate.setUTCFullYear(1970, 0, 1); // Reset to base time in UTC
+  return deltaDate;
+};

@@ -5,7 +5,7 @@ import {
 } from 'firebase/auth'; // Update import path for Firebase Auth
 import { auth } from '../firebase/fbInit';
 import { useNavigation } from 'expo-router/src/useNavigation';
-import parseUserInfo from '../utils/auth/parseUserInfo';
+import parseUserInfo from '../logic/auth/parseUserInfo';
 import { useAppDispatch } from '../../hooks';
 import { updateAuth } from '../store/slices/authSlice';
 

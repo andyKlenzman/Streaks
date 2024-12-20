@@ -4,8 +4,11 @@
  * 
  * status field is conditional based on whether it is true or not.
  * 
- * Notg that BaseStreak is not exported.
+ * Note that BaseStreak is not exported.
  * */ 
+
+import { LoadState } from "./generalStatusCodes.interfaces";
+
 type BaseStreak = {
   id: string;
   creator_uuid: string;
@@ -18,11 +21,11 @@ type BaseStreak = {
 export type Streak =
   | (BaseStreak & {
       isShared: false;
-      status: StreakStatus;
+      status: LocalStreakStatus;
     })
   | (BaseStreak & {
       isShared: true;
-      status: StreakStatusShared;
+      status: SharedLocalStatus;
     });
 
 
@@ -30,23 +33,19 @@ export type ISOtimestamp = `${number}-${string}-${string}T${string}:${string}:${
 
 
 
-export type StreakStatusShared =  'isPending'   | // the streak has been sent to another user but not yet accepted
+export type SharedLocalStatus =  'isPending'   | // the streak has been sent to another user but not yet accepted
                                   'isAccepted'  | // the invited user has accepted the streak, but no action has been taken
                                   'isRejected'  | // the invited user accepted the streaj
                                   'isActive'    | // triggered when one of the users first complete the streak
                                   'isBroken'    ; // the condition for a condition is met
 
 
-export type StreakStatus =        'isPending'   | // the streak has been sent to another user but not yet accepted
-                                  'isActive'    | // triggered when one of the users first complete the streak
+export type LocalStreakStatus =   'isPending'   | // the streak has been sent to another user but not yet accepted
+                                  'isActive'    | // triggered when user completes it for the first time.
                                   'isBroken'    ; // the condition for a condition is met
 
                                   
-export type StreakStatusUI =      'showCompleted' | // after streak is completed, disables ability to immeditately  complete again
-                                  'showPending'   | // streak can be completed
-                                  'showBroken'    ; // the streak is broken/
-
-
+// this needs more work
 export type StreakInviteCreatorStatusUI =  'showIs' | // after streak is completed, disables ability to immeditately  complete again
                                         `  'showPending'   | // streak can be completed
                                            'showBroken'    ; // the streak is broken/`
@@ -56,11 +55,9 @@ export type StreakStatusUI =      'showCompleted' | // shortly after the streak 
                                   'showBroken'    ; // the condition for a condition is met
 
 
-export interface StreaksState {
+
+// Interface for holding multiple streaks.                                  
+export type LocalStreaks = {
   streaks: Streak[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
-}
-
-
+};
 

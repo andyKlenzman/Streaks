@@ -1,85 +1,41 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/streak.interface';
-import { useEffect, useState } from 'react';
-import DeleteButton from './buttons/DeleteButton';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../../hooks';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import PendingStreakButton from './buttons/PendingStreakButton';
-import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
-import { parseTime, getTimeUntilStreakBroken } from '../../utils/timeUtils';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { listItemStyles as styles } from './listItemStyles';
+import DeleteButton from './buttons/DeleteButton';
+import PendingStreakButton from './buttons/PendingStreakButton';
+import { parseTime, getTimeUntilStreakBroken } from '../../logic/timeUtils';
+import ListItem from './ListItem';
+import { getIsStreakExpired } from '../../logic/time/streakTimeLogic';
 
-const PendingListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) => {
+
+
+const PendingListItem = ({ title, count, lastTimeUpdated, id }) => {
+
   const dispatch = useAppDispatch();
-  const openStreakId = useAppSelector(selectOpenStreak);
-  const [subtitle, setSubtitle] = useState({ timeLeft: 0, timeInterval: 'hours' });
-
-  const handleTimeOperations = () => {
-    const dateObj = new Date(time);
-    const dueDate = getTimeUntilStreakBroken(dateObj);
-    const { hours, minutes } = parseTime(dueDate);
-
-    if (hours > 1) {
-      setSubtitle({ timeLeft: hours, timeInterval: 'hours' });
-    } else if (hours === 1) {
-      setSubtitle({ timeLeft: hours, timeInterval: 'hour' });
-    } else {
-      setSubtitle({ timeLeft: minutes, timeInterval: 'minutes' });
-    }
-
-    if (dueDate.getTime() <= 0) {
-      dispatch(changeStreakStatus({ id: id, status: 'broken' }));
-    }
-  };
+  const [subtitle, setSubtitle] = useState('');
+  const checkTimeRateMS = 10000;
 
   useEffect(() => {
-    handleTimeOperations();
-    const interval = setInterval(() => {
-      handleTimeOperations();
-    }, 1000);
+ 
+  let isStreakExpired = getIsStreakExpired(new Date(lastTimeUpdated));
 
-    return () => clearInterval(interval);
-  }, [time]);
+  }, []);
 
-  useEffect(() => {
-    if (id !== openStreakId) {
-    }
-  }, [openStreakId]);
-
-  const renderRightActions = () => {
-    // Your content for right swipe
-    return (
-      <View style={styles.deleteButtonContainer}>
-        <DeleteButton id={id} />
-      </View>
-    );
-  };
+  const renderRightActions = () => (
+    <DeleteButton id={id} />
+  );
 
   return (
-    <Swipeable
+    <ListItem
+      title={title}
+      count={count}
+      subtitle={subtitle}
       renderRightActions={renderRightActions}
-      overshootFriction={8}
+      renderActionButton={() => <PendingStreakButton id={id} />}
       onSwipeableOpen={() => dispatch(openStreak(id))}
-      onSwipeableClose={() => dispatch(openStreak(''))}>
-      <View style={styles.parentContainer}>
-        <View style={styles.textContainer}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
-            {title}
-          </Text>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.textSecondary}>
-            {subtitle.timeLeft} {subtitle.timeInterval} left
-          </Text>
-          <View style={styles.dayCountAndButtonContainer}>
-            <Text style={styles.dayCount}>{count}</Text>
-            <PendingStreakButton id={id} />
-          </View>
-        </View>
-      </View>
-    </Swipeable>
+      onSwipeableClose={() => dispatch(openStreak(''))}
+    />
   );
 };
 

@@ -3,7 +3,7 @@ import ListContainer from '../components/list/ListContainer';
 import { Button, View, StyleSheet } from 'react-native';
 import { useAppDispatch } from '../../hooks';
 import { useNavigation } from 'expo-router';
-import { logOut, deleteAccount } from '../utils/auth/authActions';  // Import from new file
+import { logOut, deleteAccount } from '../logic/auth/authActions';  // Import from new file
 
 const HomeLayout = () => {
   const dispatch = useAppDispatch();

@@ -5,48 +5,62 @@ import PendingListItem from '../listItems/PendingListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
 import { useAppSelector, useAppDispatch } from '../../../hooks'; 
 import { fetchStreaks } from '../../store/slices/streaksSlice'; 
-import { selectAllStreaks } from '../../store/selectors/selectAllStreaks'; 
+import { selectAllStreaks } from '../../store/selectors/localStreakSelectors'; 
 import CompleteListItem from '../listItems/CompleteListItem';
 import NewListItem from '../listItems/NewListItem';
 
 const ListContainer = () => {
+
   const dispatch = useAppDispatch();
-  const streaks = useAppSelector(selectAllStreaks);
-  const status = useAppSelector((state) => state.streaks.status); 
-  const error = useAppSelector((state) => state.streaks.error); 
+
+
+
+
+  // Local Streaks
+  const localStreaks = useAppSelector(selectAllStreaks);
+
+
+  //ToDo: centralize and check Streak UI state
+
+
+  //ToDo: dentralize and check Streak state (if it is a default streak)
+
+
+
+  // ToDo: restrict ListItems to Appearanc
+
+
   
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchStreaks());
+    // ToDo: get shared streaks
+
+
+
+    // ToDo: get local streak
+    switch (status) {
+      case 'idle':
+        dispatch(fetchStreaks());
+        break;
+      case 'loading':
+        break;
+      case 'succeeded':
+        break;
+      case 'error':
+        break;
+      default:
+        break;
     }
-  }, [status, dispatch]);
+
+  }, [dispatch]);
 
   const colors = ['white', '#eeeeeef5'];
 
-  // Handle loading state
-  if (status === 'loading') {
-    return (
-      <View style={styles.list}>
-        <Text style={styles.text}>Loading streaks...</Text>
-      </View>
-    );
-  }
-
-  // Handle error state
-  if (status === 'failed') {
-    return (
-      <View style={styles.list}>
-        <Text style={styles.text}>Error fetching streaks: {error}</Text>
-      </View>
-    );
-  }
 
   return (
     <FlatList
-      data={streaks}
+      data={localStreaks}
       renderItem={({ item, index }) => {
         let component;
-
         switch (item.status) {
           case 'complete':
             component = <CompleteListItem {...item} />;

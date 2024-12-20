@@ -1,73 +1,29 @@
-import Swipeable from 'react-native-gesture-handler/Swipeable';
-import RetryButton from './buttons/RetryButton';
-import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
-import { Streak } from '../../shared/interfaces/streak.interface';
-import { useEffect } from 'react';
-import DeleteButton from './buttons/DeleteButton';
+import React, { useEffect } from 'react';
+import { useAppDispatch } from '../../../hooks';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { selectOpenStreak } from '../../store/selectors/selectOpenStreak';
 import { openStreak } from '../../store/slices/uiSlice';
+import DeleteButton from './buttons/DeleteButton';
 import CompleteButton from './buttons/CompleteButton';
-import { getTimeUntilStatusChange } from '../../utils/timeUtils';
-import { listItemStyles as styles } from './listItemStyles';
+import { getTimeUntilStatusChange } from '../../logic/timeUtils';
+import ListItem from './ListItem';
 
-const CompleteListItem = ({ title, count, lastTimeUpdated: time, id }: Streak) => {
-  const dispatch = useAppDispatch();
-  const openStreakId = useAppSelector(selectOpenStreak);
 
-  const handleTimeOperations = () => {
-    const timeUntilStatusChange = getTimeUntilStatusChange(time);
+const CompleteListItem = ({ title, count, lastTimeUpdated, id }) => {
 
-    //the status of the streak will be changed when time expires, and pending list item will be rendered
-    if (timeUntilStatusChange.getTime() <= 0) {
-      dispatch(changeStreakStatus({ id: id, status: 'pending' }));
-    }
-  };
-
-  //this function allows for the list item to open and close to reveal more functionality when selected
-  const handlePress = () => {
-    dispatch(openStreak(id));
-  };
-
-  useEffect(() => {
-    handleTimeOperations();
-    const interval = setInterval(() => {
-      handleTimeOperations();
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [time]);
-
-  const renderRightActions = () => {
-    return (
-      <View style={styles.deleteButtonContainer}>
-        <DeleteButton id={id} />
-      </View>
-    );
-  };
+  const renderRightActions = () => (
+    <DeleteButton id={id} />
+  );
 
   return (
-    <Swipeable
+    <ListItem
+      title={title}
+      count={count}
+      subtitle="complete"
       renderRightActions={renderRightActions}
-      overshootFriction={8}
+      renderActionButton={() => <CompleteButton />}
       onSwipeableOpen={() => dispatch(openStreak(id))}
-      onSwipeableClose={() => dispatch(openStreak(''))}>
-      <View style={styles.parentContainer}>
-        <View style={styles.textContainer}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
-            {title}
-          </Text>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.textSecondary}>complete</Text>
-          <View style={styles.dayCountAndButtonContainer}>
-            <Text style={styles.dayCount}>{count}</Text>
-            <CompleteButton />
-          </View>
-        </View>
-      </View>
-    </Swipeable>
+      onSwipeableClose={() => dispatch(openStreak(''))}
+    />
   );
 };
 

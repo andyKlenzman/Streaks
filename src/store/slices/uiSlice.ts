@@ -9,8 +9,6 @@ export const uiSlice = createSlice({
     openStreak:(state, action: PayloadAction<string>) => {
         return action.payload
       },
-  
-
   },
 });
 

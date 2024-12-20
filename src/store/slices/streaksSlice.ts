@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Streak, StreaksState, StreakStatus } from '../../shared/interfaces/streak.interface';
+import { Streak, StreaksState, LocalStreakStatus } from '../../shared/interfaces/streak.interface';
 import { db } from '../../firebase/fbInit';
 import { collection, query, where, getDocs, setDoc, doc , deleteDoc} from "firebase/firestore";
 // Define initial state
@@ -97,8 +97,8 @@ export const submitNewStreak = createAsyncThunk(
         uuid,
         title: values.title,
         count: 0,
-        status: "pending",
-        lastTimeUpdated: new Date().toISOString(),
+        status: "isPending",
+        lastTimeCompleted: new Date().toISOString(),
         isShared: false,
       };
 
@@ -162,7 +162,7 @@ export const streaksSlice = createSlice({
       
       state.status = "idle" //ToDo: setzen status structure durch um backend kommunikation Ablauf zu verwalten
     },
-    changeStreakStatus: (state, action: PayloadAction<{ id: string, status: StreakStatus }>) => {
+    changeStreakStatus: (state, action: PayloadAction<{ id: string, status: LocalStreakStatus }>) => {
       const { id, status } = action.payload;
       const index = state.streaks.findIndex((streak) => streak.id === id);
 
@@ -178,7 +178,7 @@ export const streaksSlice = createSlice({
       if (index !== -1) {
         const updatedStreak = {
           ...state.streaks[index],
-          lastTimeUpdated: currentUtcTimestamp,
+          lastTimeCompleted: currentUtcTimestamp,
           count: state.streaks[index].count + 1,
           status: 'complete',
         };
@@ -193,7 +193,7 @@ export const streaksSlice = createSlice({
       if (index !== -1) {
         const updatedStreak = {
           ...state.streaks[index],
-          lastTimeUpdated: currentUtcTimestamp,
+          lastTimeCompleted: currentUtcTimestamp,
           count: 0,
           status: 'pending',
         };

@@ -4,13 +4,14 @@ import { persistStore, persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import { combineReducers, PreloadedState } from '@reduxjs/toolkit';
 import streaksSlice from './slices/streaksSlice';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import uiSlice from './slices/uiSlice';
 import authSlice from './slices/authSlice';
+import { localStreakSlice } from './slices/localStreakSlice';
 
 const rootReducer = combineReducers({
   streaks: streaksSlice,
+  localStreaks: localStreakSlice,
   ui: uiSlice,
   auth: authSlice,
 });
