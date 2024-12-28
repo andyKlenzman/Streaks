@@ -7,8 +7,9 @@ import { openStreak } from '../../store/slices/uiSlice';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { listItemStyles as styles } from './listItemStyles';
 import PendingStreakButton from './buttons/PendingStreakButton';
+import React from 'react';
 
-const NewListItem = ({ title, count, id }: Streak) => {
+const NewListItem = ({ title, count, streakUUID: id }: Streak) => {
   const dispatch = useAppDispatch();
   const openStreakId = useAppSelector(selectOpenStreak);
 

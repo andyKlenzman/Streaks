@@ -16,9 +16,6 @@ const ListItem = ({
   onSwipeableClose 
 }) => {
 
-
-
-
   return (
     <Swipeable
       renderRightActions={renderRightActions}

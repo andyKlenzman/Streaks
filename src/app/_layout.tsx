@@ -28,7 +28,7 @@ function AuthListener() {
         console.log("user present in on auth change ",user)
         dispatch(updateAuth({ email: user.email, isSignedIn: true }));
       } else {
-        console.log("no user in auth change")
+        console.log("No user in onAuthStateChanged")
         // dispatch(updateAuth({ email: "", isSignedIn: false }));
       }
     });
@@ -40,10 +40,10 @@ function AuthListener() {
     if (isNavReady) {
       const authData = store.getState().auth;
       if (!authData.isSignedIn) {
-        console.log("NOOO USER PRESENT")
+        console.log("No user present")
         navigation.navigate('AuthHome');
       } else {
-        console.log(" USER IS PRESENT", authData)
+        console.log("User present", authData)
 
       }
     }

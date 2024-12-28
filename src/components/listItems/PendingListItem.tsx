@@ -6,11 +6,11 @@ import DeleteButton from './buttons/DeleteButton';
 import PendingStreakButton from './buttons/PendingStreakButton';
 import { parseTime, getTimeUntilStreakBroken } from '../../logic/timeUtils';
 import ListItem from './ListItem';
-import { getIsStreakExpired } from '../../logic/time/streakTimeLogic';
+import { isStreakExpired } from '../../logic/time/streakTimeLogic';
 
 
 
-const PendingListItem = ({ title, count, lastTimeUpdated, id }) => {
+const ActiveListItem = ({ title, count, lastTimeUpdated, id }) => {
 
   const dispatch = useAppDispatch();
   const [subtitle, setSubtitle] = useState('');
@@ -18,7 +18,7 @@ const PendingListItem = ({ title, count, lastTimeUpdated, id }) => {
 
   useEffect(() => {
  
-  let isStreakExpired = getIsStreakExpired(new Date(lastTimeUpdated));
+  let isStreakExpired = isStreakExpired(new Date(lastTimeUpdated));
 
   }, []);
 
@@ -39,4 +39,4 @@ const PendingListItem = ({ title, count, lastTimeUpdated, id }) => {
   );
 };
 
-export default PendingListItem;
+export default ActiveListItem;

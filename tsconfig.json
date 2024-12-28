@@ -1,6 +1,7 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
+     "jsx": "react",
      // Strict Checks
      "strict": true, // Ensures that your files are parsed in the ECMAScript strict mode, and emit “use strict” for each source file.
      "allowUnreachableCode": false, // pick up dead code paths

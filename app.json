@@ -17,7 +17,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.andyklenzman.Streaks"
+      "bundleIdentifier": "com.andyklenzman.Streaks",
+      "simulator": "iPhone iOS 16.2"
+
     },
     "android": {
       "adaptiveIcon": {

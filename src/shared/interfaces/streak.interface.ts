@@ -7,12 +7,11 @@
  * Note that BaseStreak is not exported.
  * */ 
 
-import { LoadState } from "./generalStatusCodes.interfaces";
 
 type BaseStreak = {
-  id: string;
-  creator_uuid: string;
-  other_uuid: string;
+  streakUUID: string;
+  creatorUUID: string;
+  partnerUUID: string;
   title: string;
   count: number;
   lastTimeCompleted: ISOtimestamp;
@@ -34,15 +33,15 @@ export type ISOtimestamp = `${number}-${string}-${string}T${string}:${string}:${
 
 
 export type SharedLocalStatus =  'isPending'   | // the streak has been sent to another user but not yet accepted
-                                  'isAccepted'  | // the invited user has accepted the streak, but no action has been taken
+                                  'isReady'  | // the invited user has accepted the streak, but no action has been taken
                                   'isRejected'  | // the invited user accepted the streaj
                                   'isActive'    | // triggered when one of the users first complete the streak
                                   'isBroken'    ; // the condition for a condition is met
 
 
-export type LocalStreakStatus =   'isPending'   | // the streak has been sent to another user but not yet accepted
-                                  'isActive'    | // triggered when user completes it for the first time.
-                                  'isBroken'    ; // the condition for a condition is met
+export type LocalStreakStatus = 'isReady'     | // Streak is created but has not yet been acted on. It renders the New Streak List Item and signals that the streak should not be broken. component. Choosing to use this state rather than simply ready count === 0 to determine that it is new,  a state versues reading that the count is 
+                                'isActive'    | // triggered when user completes it for the first time.
+                                'isBroken'    ; // the condition for a condition is met
 
                                   
 // this needs more work
@@ -55,9 +54,13 @@ export type StreakStatusUI =      'showCompleted' | // shortly after the streak 
                                   'showBroken'    ; // the condition for a condition is met
 
 
+// export type StreakFormInput =   
+// type PersonOhneAdresse = Omit<BaseStreak, ''  | ''>;
+
+
 
 // Interface for holding multiple streaks.                                  
-export type LocalStreaks = {
+export interface LocalStreaks {
   streaks: Streak[];
 };
 

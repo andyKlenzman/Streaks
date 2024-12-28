@@ -50,10 +50,8 @@ export const getStreakExpirationTime = (lastTimeCompleted:ISOtimestamp): Date =>
   
 
 
-
-
   
-export const getIsStreakExpired = (lastTimeCompleted: ISOtimestamp): boolean => {
+export const isStreakExpired = (lastTimeCompleted: ISOtimestamp): boolean => {
       const delta = getStreakExpirationTimeDelta(lastTimeCompleted);
   
       // Check if the time delta is less than or equal to zero
@@ -61,7 +59,21 @@ export const getIsStreakExpired = (lastTimeCompleted: ISOtimestamp): boolean => 
   };
   
 
-  
-  
+// determines if the streak has been recently completed, and if so, disables
+// the ability to complete the streak until the next available time when it is
+// After 2 am local time it is activated
+export const getIsStreakUIComplete = (): boolean => {
+  const currentTime = new Date();
 
+  if(currentTime.getHours() > 2)
+  {
+    return true
+  } else 
+  {
+    return false
+  }
+
+
+
+}
 

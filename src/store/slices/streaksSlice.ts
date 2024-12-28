@@ -47,7 +47,7 @@ export const fetchStreaks = createAsyncThunk(
           if (!data) {
             throw new Error(`No data found for document with ID: ${doc.id}`);
           }
-          streaks.push({ id: doc.id, ...data } as Streak);
+          streaks.push({ streakUUID: doc.id, ...data } as Streak);
         } catch (docError) {
           console.error(`Error processing document with ID: ${doc.id}:`, docError);
         }
@@ -93,7 +93,7 @@ export const submitNewStreak = createAsyncThunk(
 
 
       const streakData: Streak = {
-        id: streakId,
+        streakUUID: streakId,
         uuid,
         title: values.title,
         count: 0,

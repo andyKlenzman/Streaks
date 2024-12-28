@@ -3,27 +3,40 @@
  */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Timestamp } from 'firebase/firestore';
-import { Streak, LocalStreakStatus } from '../../shared/interfaces/streak.interface';
+import { Streak, LocalStreakStatus, LocalStreaks } from '../../shared/interfaces/streak.interface';
 import { AppDispatch } from '../store';
+import uuid from 'react-native-uuid';
 
 
-const initialState: StreaksState = {
+const initialState: LocalStreaks = {
   streaks: [], 
 };
 
 export const localStreakSlice = createSlice({
-  name: 'streaks',
+  name: 'localStreaks',
   initialState,
   reducers: 
   {
     createLocalStreak: (state, action: PayloadAction<Streak>) => {
-      state.streaks.push(action.payload);
+      
+      const newStreak: Streak = {
+        streakUUID: uuid.v4(),
+        creatorUUID: action.payload.creatorUUID,
+        partnerUUID: "",
+        title: action.payload.title,
+        count: 0,
+        lastTimeCompleted: new Date().toISOString(),
+        status: "isReady",
+        isShared: false,
+      };
+
+
+      state.streaks.push(newStreak);
     },
 
     deleteLocalStreak: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      const index = state.streaks.findIndex((streak: Streak) => streak.id === id);
+      const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === id);
       if (index == -1) {
         console.error(`Streak with ID ${action.payload} not found.`); 
         return;
@@ -34,7 +47,7 @@ export const localStreakSlice = createSlice({
     changeLocalStreakStatusById: (state, action: PayloadAction<{ id: string; status: LocalStreakStatus }>) => {
       const { id, status } = action.payload;
 
-      const index = state.streaks.findIndex((streak: Streak) => streak.id === id);
+      const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === id);
       if (index == -1) {
         console.error(`Streak with ID ${action.payload} not found.`); 
         return;
@@ -45,7 +58,7 @@ export const localStreakSlice = createSlice({
 
     incrementLocalStreakCountById: (state, action: PayloadAction<string>) => {
       const currentUtcTimestamp = new Date().toISOString();
-      const index = state.streaks.findIndex((streak: Streak) => streak.id === action.payload);
+      const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === action.payload);
       if (index == -1) {
         console.error(`Streak with ID ${action.payload} not found.`); 
         return;
@@ -65,27 +78,16 @@ export const localStreakSlice = createSlice({
     updateLocalStreakLastTimeCompletedById: (state, action: PayloadAction<{ id: string; timestamp: string }>) => {
         const {id, timestamp } = action.payload;
         
-        const index = state.streaks.findIndex((streak: Streak) => streak.id === id);
+        const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === id);
         if (index == -1) {
           console.error(`Streak with ID ${action.payload} not found.`); 
           return;
         }
                 
         state.streaks[index].lastTimeCompleted = timestamp;
-      },
+ 
 
-    retryLocalStreakById: (state, action: PayloadAction<string>) => {
-      const index = state.streaks.findIndex((streak: Streak) => streak.id === action.payload);
-      if (index !== -1) {
 
-        const updatedStreak = {
-          ...state.streaks[index],
-          lastTimeCompleted: currentUtcTimestamp,
-          count: 0,
-          status: 'pending',
-        };
-        state.streaks[index] = updatedStreak;
-      }
     },
   },
 });
@@ -105,3 +107,4 @@ export const completeLocalStreakById = (id: string) => (dispatch: AppDispatch) =
 // Export actions and reducer
 export const { createLocalStreak, deleteLocalStreak, changeLocalStreakStatusById, incrementLocalStreakCountById, retryLocalStreakById } = localStreakSlice.actions;
 
+export default localStreakSlice.reducer;

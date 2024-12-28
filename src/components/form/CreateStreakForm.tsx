@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -13,21 +13,30 @@ import {
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useAppDispatch } from '../../../hooks';
-import { Streak, StreakFormInput } from '../../shared/interfaces/streak.interface';
 import { useNavigation } from 'expo-router';
-import { submitNewStreak } from '../../store/slices/streaksSlice';
+import { createLocalStreak } from '../../store/slices/localStreakSlice';
+import { useAppSelector } from '../../../hooks';
+import {selectAuthUUID} from '../../store/selectors/authSelectors'
+
+
+
 
 const CreateStreakForm = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const inputRef = useRef<TextInput>(null);
   const [allowError, setAllowError] = useState(false);
+  const creatorUUID = useAppSelector(selectAuthUUID);
+
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('blur', () => setAllowError(false));
     return unsubscribe;
   }, [navigation]);
 
+
+  //
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -44,9 +53,27 @@ const CreateStreakForm = () => {
     values: StreakFormInput,
     { resetForm }: FormikHelpers<StreakFormInput>
   ) => {
+
+    // for local streaks
+    if(true)
+    {
+
+      dispatch(createLocalStreak({...values, creatorUUID}))
+      resetForm();
+      navigation.navigate('index');
+
+      return;
+    }
+
+
+
     try {
-      // Thunk dispatchen
-      await dispatch(submitNewStreak(values));
+      
+
+
+
+
+      // await dispatch(submitNewStreak(values));
   
       // Formular zurücksetzen und Navigation
       resetForm();

@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth'; // Update import path for Firebase Auth
 import { auth } from '../firebase/fbInit';
-import { useNavigation } from 'expo-router/src/useNavigation';
+
+
+import { useNavigation } from 'expo-router';
+
 import parseUserInfo from '../logic/auth/parseUserInfo';
 import { useAppDispatch } from '../../hooks';
 import { updateAuth } from '../store/slices/authSlice';
@@ -22,7 +25,7 @@ const AuthSignup = () => {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
-        dispatch(updateAuth({email: user.email, uid:user.uid, isSignedIn: true}))
+        dispatch(updateAuth({email: user.email, uuid:user.uid, isSignedIn: true}))
         navigation.navigate('index');
 
     } catch (error) {

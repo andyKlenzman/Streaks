@@ -3,14 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import { combineReducers, PreloadedState } from '@reduxjs/toolkit';
-import streaksSlice from './slices/streaksSlice';
 import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import uiSlice from './slices/uiSlice';
 import authSlice from './slices/authSlice';
-import { localStreakSlice } from './slices/localStreakSlice';
+import localStreakSlice from './slices/localStreakSlice';
+import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
 const rootReducer = combineReducers({
-  streaks: streaksSlice,
   localStreaks: localStreakSlice,
   ui: uiSlice,
   auth: authSlice,
@@ -19,9 +18,9 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['streaks', 'auth'], // Persist 'streaks' and 'auth' slices
+  whitelist: ['localStreaks', 'auth'], // Persist 'streaks' and 'auth' slices
   blacklist: ['ui'],
-  stateReconciler: autoMergeLevel1, //wtf macht es eigentlich
+  stateReconciler: autoMergeLevel1, 
 };
 
 // Create persisted reducer
@@ -32,6 +31,8 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
   preloadedState: undefined,
+  devTools: false,
+  enhancers: getDefaultEnhancers => getDefaultEnhancers.concat(devToolsEnhancer())
 });
 
 // Create persistor

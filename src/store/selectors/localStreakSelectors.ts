@@ -9,6 +9,6 @@ export const selectAllLocalStreaks = (state: RootState) => {
 };
 
 
-export const selectAllSharedStreaks = (state: RootState) => {
-  return state.streaks.sharedStreaks;
-};
+// export const selectAllSharedStreaks = (state: RootState) => {
+//   return state.streaks.sharedStreaks;
+// };
