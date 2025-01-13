@@ -46,6 +46,18 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
   });
 };
 
+
+// Purge stored state
+export const purgeState = async () => {
+  try {
+    await persistor.purge();
+    console.log('Persisted state purged successfully!');
+  } catch (error) {
+    console.error('Failed to purge persisted state:', error);
+  }
+};
+
+
 // TypeScript types
 export type AppStore = ReturnType<typeof setupStore>;
 export type RootState = ReturnType<typeof rootReducer>;
