@@ -1,52 +1,60 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { listItemStyles as styles } from './listItemStyles';
+import { useAppDispatch } from '../../../hooks';
+import { openStreak } from '../../store/slices/uiSlice';
+
+import DeleteButton from './buttons/DeleteButton';
+
 
 const ListItem = ({
   title,
   count,
   subtitle,
-  renderRightActions,
-  renderActionButton,
-  onSwipeableOpen,
-  onSwipeableClose,
-  backgroundColor
+  actionButton,
+  backgroundColor,
+  streak
+
 }) => {
+  const dispatch = useAppDispatch();
+
+  const renderRightActions = () => {
+    return (
+      <View style={styles.deleteButtonContainer}>
+        <DeleteButton streakUUID={streak.streakUUID} />
+      </View>
+    );
+  };
+  
   return (
-    <ReanimatedSwipeable
-      renderRightActions={renderRightActions}
-      overshootFriction={8}
-      onSwipeableOpen={onSwipeableOpen}
-      onSwipeableClose={onSwipeableClose}
-    >
-      <View style={[styles.parentContainer, { backgroundColor }]}>
-        <View style={styles.textContainer}>
-          <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
-            {title}
-          </Text>
-        </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.textSecondary}>{subtitle}</Text>
-          <View style={styles.dayCountAndButtonContainer}>
-            <Text style={styles.dayCount}>{count}</Text>
-            {renderActionButton && renderActionButton()}
+    <View >
+      <ReanimatedSwipeable
+        renderRightActions={renderRightActions}
+        overshootFriction={12}
+        onSwipeableOpen={() => dispatch(openStreak(streak.streakUUID))}
+        onSwipeableClose={() => dispatch(openStreak(''))}
+      >
+        <View style={[styles.parentContainer, { backgroundColor: backgroundColor} ]}>
+          <View style={styles.textContainer}>
+            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMain}>
+              {title}
+            </Text>
+          </View>
+          <View style={styles.bottomContainer}>
+            <Text style={styles.textSecondary}>{subtitle}</Text>
+            <View style={styles.dayCountAndButtonContainer}>
+              <Text style={styles.dayCount}>{count}</Text>
+              {actionButton()}
+            </View>
           </View>
         </View>
-      </View>
-    </ReanimatedSwipeable>
+      </ReanimatedSwipeable>
+    </View>
   );
+  
 };
 
 export default ListItem;
 
-// Optionally add styles for swipeable actions
-const actionStyles = StyleSheet.create({
-  rightAction: {
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    backgroundColor: 'red',
-    height: '100%',
-    padding: 20,
-  },
-});
+

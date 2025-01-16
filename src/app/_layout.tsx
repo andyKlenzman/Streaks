@@ -1,66 +1,84 @@
+import React, { useEffect } from 'react';
 import { Stack } from 'expo-router/stack';
 import { Provider } from 'react-redux';
-import { store, persistor } from '../store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../firebase/fbInit';
-import { useEffect, useState } from 'react';
-import { useNavigation } from 'expo-router';
-import { updateAuth } from '../store/slices/authSlice';
+import { store, persistor } from '../store/store';
 import { useAppDispatch } from '../../hooks';
-import { purgeState } from '../store/store';
+import { updateAuth } from '../store/slices/authSlice';
 
-function AuthListener() 
-{
+function AuthListener() {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
-  const [isNavReady, setNavReady] = useState(false);
 
-
-
-  useEffect(() => {
-    if (navigation && !isNavReady) 
-    {
-      setNavReady(true);
-    }
-  }, [navigation, isNavReady]);
-
+  // Monitor auth state and update Redux
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) 
-      {
-        console.log("user present in on auth change ",user)
-        dispatch(updateAuth({ email: user.email, isSignedIn: true }));
-      } else 
-      {
-        console.log("No user in onAuthStateChanged")
+      if (user) {
+        console.log('User signed in:', user);
+        dispatch(
+          updateAuth({
+            authEmail: user.email || '',
+            isSignedIn: true,
+            authUUID: user.uid,
+          })
+        );
+      } else {
+        console.log('No user signed in');
+        dispatch(
+          updateAuth({
+            authEmail: '',
+            isSignedIn: false,
+            authUUID: '',
+          })
+        );
       }
     });
 
     return () => unsubscribe();
   }, [dispatch]);
 
-  useEffect(() => {
-    if (isNavReady) 
-    {
-      const authData = store.getState().auth;
-      if (!authData.isSignedIn) 
-      {
-        
-        navigation.navigate('AuthHome');
-      }
-    }
-  }, [isNavReady, navigation]);
-
   return null;
 }
+
+
+
+
+import { updateAllStreakStatusesThunk } from '../store/slices/localStreakSlice';
+
+const StreakUpdater = () => {
+  const dispatch = useAppDispatch();
+
+  dispatch(updateAllStreakStatusesThunk());
+
+
+  useEffect(() => {
+    // Update streak statuses every 5 minutes
+    const interval = setInterval(() => {
+      dispatch(updateAllStreakStatusesThunk());
+    }, 300000); // 5 minutes
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
+  }, [dispatch]);
+
+  return null;
+};
+
+
+
+
+
+
 
 export default function Layout() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaView style={{ flex: 1 }}>
+          {/* AuthListener keeps the state in sync */}
+          <StreakUpdater />
           <AuthListener />
           <Stack />
         </SafeAreaView>

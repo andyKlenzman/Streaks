@@ -1,23 +1,28 @@
 import React from 'react';
 import { FlatList, StyleSheet, View, Text } from 'react-native';
-import ActiveListItem from '../listItems/PendingListItem';
+
+import PendingListItem from '../listItems/ActiveListItem';
 import BrokenListItem from '../listItems/BrokenListItem';
 import CompleteListItem from '../listItems/CompleteListItem';
-import { useAppSelector, useAppDispatch } from '../../../hooks';
+import NewListItem from '../listItems/NewListItem';
+
+
+import { useAppSelector } from '../../../hooks';
 import { selectAllLocalStreaks } from '../../store/selectors/localStreakSelectors';
 import { getIsStreakUIComplete } from '../../logic/time/streakTimeLogic';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Streak } from '../../shared/interfaces/streak.interface';
 
 const ListContainer = () => {
-  const dispatch = useAppDispatch();
   const localStreaks = useAppSelector(selectAllLocalStreaks);
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={styles.container}>
       <FlatList
         data={localStreaks}
-        renderItem={({ item, index }) => getListItemComponent(item, index)}
+        renderItem={({ item, index }) => (
+          <StreakListItem streak={item} index={index} />
+        )}
         keyExtractor={(item) => item.streakUUID}
         nestedScrollEnabled
       />
@@ -28,6 +33,9 @@ const ListContainer = () => {
 export default ListContainer;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   whiteBackground: {
     backgroundColor: 'white',
   },
@@ -36,29 +44,41 @@ const styles = StyleSheet.create({
   },
 });
 
-const getListItemComponent = (streak: Streak, index: number) => {
-  console.log('Rendering Streak:', streak);
+const StreakListItem = ({ streak, index }: { streak: Streak; index: number }) => {
+  // Determine the background color for alternating rows
+  const backgroundColor =
+    index % 2 === 0
+      ? styles.whiteBackground.backgroundColor
+      : styles.beigeBackground.backgroundColor;
 
-  const backgroundColor = index % 2 === 0 ? styles.whiteBackground.backgroundColor : styles.beigeBackground.backgroundColor;
-  const isStreakComplete = getIsStreakUIComplete();
+  // Determine if the streak is complete based on time state
+  const isStreakComplete = getIsStreakUIComplete(streak);
 
-  let Component;
-  switch (streak.status) {
-    case 'isReady':
-    case 'isActive':
-      Component = isStreakComplete ? CompleteListItem : ActiveListItem;
-      break;
-    case 'isBroken':
-      Component = BrokenListItem;
-      break;
-    default:
-      console.error('Could not determine List Item component for Streak:', streak);
-      return null; // Handle unknown status gracefully
+  // Select the appropriate component based on streak status and completeness
+  const Component = getComponentForStreak(streak, isStreakComplete);
+
+  // Handle unknown or invalid statuses gracefully
+  if (!Component) {
+    console.error('Could not determine List Item component for Streak:', streak);
+    return null;
   }
 
-  return (
-    <View style={[styles.item, { backgroundColor }]}>
-      <Component streak={streak} backgroundColor={backgroundColor} />
-    </View>
-  );
+  return <Component streak={streak} backgroundColor={backgroundColor} />;
+};
+
+const getComponentForStreak = (
+  streak: Streak,
+  isStreakComplete: boolean
+): React.FC<{ streak: Streak; backgroundColor: string }> | null => {
+  switch (streak.status) {
+    case 'isReady':
+      return NewListItem;
+      break;
+    case 'isActive':
+      return isStreakComplete ? CompleteListItem : PendingListItem;
+    case 'isBroken':
+      return BrokenListItem;
+    default:
+      return null; // Unknown status
+  }
 };

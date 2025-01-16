@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppDispatch } from '../../../../hooks';
-import { completeStreak } from '../../../store/slices/streaksSlice';
+import { completeLocalStreakById } from '../../../store/slices/localStreakSlice';
 import { buttonStyles as styles } from './buttonStyles';
 
 interface ListButtonProps {
@@ -11,7 +11,7 @@ interface ListButtonProps {
 const PendingStreakButton: FC<ListButtonProps> = ({ id }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
-    dispatch(completeStreak(id));
+    dispatch(completeLocalStreakById(id));
   };
 
   return (

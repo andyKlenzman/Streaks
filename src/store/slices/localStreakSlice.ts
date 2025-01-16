@@ -1,110 +1,134 @@
-/** This file handles the Redux actions for local streaks. Shared 
- * Streaks are handled in a seperate slice. 
- */
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Streak, LocalStreakStatus, LocalStreaks } from '../../shared/interfaces/streak.interface';
 import { AppDispatch } from '../store';
 import uuid from 'react-native-uuid';
 
-
 const initialState: LocalStreaks = {
-  streaks: [], 
+  streaks: [],
+};
+
+// Helper function to find a streak by ID
+const findStreakById = (state: LocalStreaks, id: string) => {
+  const index = state.streaks.findIndex((streak) => streak.streakUUID === id);
+  if (index === -1) {
+    console.error(`Streak with ID ${id} not found.`);
+    return null;
+  }
+  return index;
+};
+
+// Utility function to determine streak status
+const determineStreakStatus = (streak: Streak): Streak['status'] => {
+  const now = new Date().getTime();
+  const lastCompletedTime = new Date(streak.lastTimeCompleted).getTime();
+  const twentyFourHours = 24 * 60 * 60 * 1000;
+
+  if (streak.status === 'isBroken') {
+    return 'isBroken'; // Streak is permanently broken
+  }
+
+  if (now - lastCompletedTime > twentyFourHours) {
+    return 'isBroken'; // Streak expired
+  }
+
+  if (streak.count > 0) {
+    return 'isActive'; // Streak is actively being maintained
+  }
+
+  return 'isReady'; // Streak is ready to start
 };
 
 export const localStreakSlice = createSlice({
   name: 'localStreaks',
   initialState,
-  reducers: 
-  {
-    createLocalStreak: (state, action: PayloadAction<Streak>) => {
-      
+  reducers: {
+    // Create a new streak
+    createLocalStreak: (state, action: PayloadAction<Omit<Streak, 'streakUUID' | 'lastTimeCompleted' | 'count' | 'status'>>) => {
       const newStreak: Streak = {
-        streakUUID: uuid.v4(),
+        streakUUID: uuid.v4() as string,
         creatorUUID: action.payload.creatorUUID,
-        partnerUUID: "",
+        partnerUUID: '',
         title: action.payload.title,
         count: 0,
         lastTimeCompleted: new Date().toISOString(),
-        status: "isReady",
+        status: 'isReady',
         isShared: false,
       };
-
-
       state.streaks.push(newStreak);
     },
 
+    // Delete a streak by ID
     deleteLocalStreak: (state, action: PayloadAction<string>) => {
-      const id = action.payload;
-      const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === id);
-      if (index == -1) {
-        console.error(`Streak with ID ${action.payload} not found.`); 
-        return;
-      }
-      state.streaks.splice(index, 1);
+      const index = findStreakById(state, action.payload);
+      if (index !== null) state.streaks.splice(index, 1);
     },
 
+    // Change the status of a streak by ID
     changeLocalStreakStatusById: (state, action: PayloadAction<{ id: string; status: LocalStreakStatus }>) => {
       const { id, status } = action.payload;
-
-      const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === id);
-      if (index == -1) {
-        console.error(`Streak with ID ${action.payload} not found.`); 
-        return;
-      }
-
-      state.streaks[index].status = status;
+      const index = findStreakById(state, id);
+      if (index !== null) state.streaks[index].status = status;
     },
 
+    // Update the status of a streak by recalculating it
+    updateLocalStreakStatusById: (state, action: PayloadAction<string>) => {
+      const index = findStreakById(state, action.payload);
+      if (index !== null) {
+        const streak = state.streaks[index];
+        state.streaks[index].status = determineStreakStatus(streak);
+      }
+    },
+
+    // Batch update all streak statuses
+    updateAllStreakStatuses: (state) => {
+      state.streaks = state.streaks.map((streak) => ({
+        ...streak,
+        status: determineStreakStatus(streak),
+      }));
+    },
+
+    // Increment streak count and update timestamp
     incrementLocalStreakCountById: (state, action: PayloadAction<string>) => {
-      const currentUtcTimestamp = new Date().toISOString();
-      const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === action.payload);
-      if (index == -1) {
-        console.error(`Streak with ID ${action.payload} not found.`); 
-        return;
+      const index = findStreakById(state, action.payload);
+      if (index !== null) {
+        const currentUtcTimestamp = new Date().toISOString();
+        state.streaks[index] = {
+          ...state.streaks[index],
+          count: state.streaks[index].count + 1,
+          lastTimeCompleted: currentUtcTimestamp,
+          status: 'isActive', // Update status directly here
+        };
       }
-
-      const updatedStreak = {
-        ...state.streaks[index],
-        lastTimeCompleted: currentUtcTimestamp,
-        count: state.streaks[index].count + 1,
-        status: 'complete',
-      };
-      
-      state.streaks[index] = updatedStreak;
-
     },
 
+    // Update the last completion time of a streak
     updateLocalStreakLastTimeCompletedById: (state, action: PayloadAction<{ id: string; timestamp: string }>) => {
-        const {id, timestamp } = action.payload;
-        
-        const index = state.streaks.findIndex((streak: Streak) => streak.streakUUID === id);
-        if (index == -1) {
-          console.error(`Streak with ID ${action.payload} not found.`); 
-          return;
-        }
-                
-        state.streaks[index].lastTimeCompleted = timestamp;
- 
-
-
+      const { id, timestamp } = action.payload;
+      const index = findStreakById(state, id);
+      if (index !== null) state.streaks[index].lastTimeCompleted = timestamp;
     },
   },
 });
 
-
-
-// Increments the count by one and updates lastCompletedTime to current time.
+// Thunk to complete a streak
 export const completeLocalStreakById = (id: string) => (dispatch: AppDispatch) => {
-    const currentUtcTimestamp = new Date().toISOString();
-  
-    dispatch(incrementLocalStreakCountById(id));
-  
-    dispatch(updateLocalStreakLastTimeCompletedById({ id, timestamp: currentUtcTimestamp }));
-  };
+  dispatch(incrementLocalStreakCountById(id));
+};
 
+// Thunk to periodically update all streak statuses
+export const updateAllStreakStatusesThunk = () => (dispatch: AppDispatch) => {
+  dispatch(localStreakSlice.actions.updateAllStreakStatuses());
+};
 
 // Export actions and reducer
-export const { createLocalStreak, deleteLocalStreak, changeLocalStreakStatusById, incrementLocalStreakCountById, retryLocalStreakById } = localStreakSlice.actions;
+export const {
+  createLocalStreak,
+  deleteLocalStreak,
+  changeLocalStreakStatusById,
+  updateLocalStreakStatusById,
+  updateAllStreakStatuses,
+  incrementLocalStreakCountById,
+  updateLocalStreakLastTimeCompletedById,
+} = localStreakSlice.actions;
 
 export default localStreakSlice.reducer;

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -12,32 +12,24 @@ import {
 } from 'react-native';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { useAppDispatch } from '../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useNavigation } from 'expo-router';
-import { createLocalStreak } from '../../store/slices/localStreakSlice';
-import { useAppSelector } from '../../../hooks';
-import {selectAuthUUID} from '../../store/selectors/authSelectors'
+import { createLocalStreak } from '../store/slices/localStreakSlice';
+import { selectAuthUUID } from '../store/selectors/authSelectors';
 
+type StreakFormInput = {
+  title: string;
+};
 
-
-
-const CreateStreakForm = () => {
+const CreateStreak = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
   const inputRef = useRef<TextInput>(null);
   const [allowError, setAllowError] = useState(false);
   const creatorUUID = useAppSelector(selectAuthUUID);
 
-
-
   useEffect(() => {
-    const unsubscribe = navigation.addListener('blur', () => setAllowError(false));
-    return unsubscribe;
-  }, [navigation]);
-
-
-  //
-  useEffect(() => {
+    // Focus input on mount
     inputRef.current?.focus();
   }, []);
 
@@ -53,36 +45,14 @@ const CreateStreakForm = () => {
     values: StreakFormInput,
     { resetForm }: FormikHelpers<StreakFormInput>
   ) => {
-
-    // for local streaks
-    if(true)
-    {
-
-      dispatch(createLocalStreak({...values, creatorUUID}))
-      resetForm();
-      navigation.navigate('index');
-
-      return;
-    }
-
-
-
     try {
-      
-
-
-
-
-      // await dispatch(submitNewStreak(values));
-  
-      // Formular zurücksetzen und Navigation
+      dispatch(createLocalStreak({ ...values, creatorUUID }));
       resetForm();
-      navigation.navigate('index');
+      navigation.replace('index'); // Use replace to prevent stacking
     } catch (error) {
-      console.error('Error submitting streak:', error);
+      console.error(error); // Handle error if needed
     }
   };
-  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -94,16 +64,16 @@ const CreateStreakForm = () => {
           initialValues={initialValues}
           onSubmit={onSubmit}
           validationSchema={validationSchema}
+          enableReinitialize // Automatically reset the form when initialValues change
         >
           {({
             handleChange,
             handleBlur,
             handleSubmit,
-            setFieldValue,
-            setFieldTouched,
             values,
             errors,
             touched,
+            setFieldValue,
           }) => (
             <View style={styles.formContainer}>
               <View style={styles.labelContainer}>
@@ -112,25 +82,31 @@ const CreateStreakForm = () => {
                   <Text style={styles.errorText}>{errors.title}</Text>
                 )}
               </View>
+
               <View style={styles.inputContainer}>
                 <TextInput
                   ref={inputRef}
                   onChangeText={(text) => {
                     setAllowError(true);
                     setFieldValue('title', text);
-                    setFieldTouched('title', true, false);
                   }}
                   onBlur={handleBlur('title')}
                   value={values.title}
                   style={styles.input}
                   placeholder="Enter intention here"
                   maxLength={40}
-                  onSubmitEditing={handleSubmit}
+                  onSubmitEditing={handleSubmit} // Submit when "Done" is pressed on keyboard
                 />
-                <Text style={styles.characterCount}>{values.title.length}/40</Text>
+                <Text style={styles.characterCount}>
+                  {values.title.length}/40
+                </Text>
               </View>
+
               <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={styles.submitButton}
+                >
                   <Text style={styles.submitButtonText}>Create</Text>
                 </TouchableOpacity>
               </View>
@@ -142,7 +118,7 @@ const CreateStreakForm = () => {
   );
 };
 
-export default CreateStreakForm;
+export default CreateStreak;
 
 const styles = StyleSheet.create({
   container: {
@@ -160,6 +136,11 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
   },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
   input: {
     height: 50,
     borderColor: 'gray',
@@ -174,11 +155,6 @@ const styles = StyleSheet.create({
     bottom: -15,
     right: 10,
     color: 'grey',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
   },
   submitButton: {
     backgroundColor: '#3498db',

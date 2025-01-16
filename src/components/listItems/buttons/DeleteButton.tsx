@@ -1,28 +1,28 @@
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet } from 'react-native';
-import { deleteStreak, deleteStreakBackend } from '../../../store/slices/streaksSlice';
+import {  deleteStreakBackend } from '../../../store/slices/streaksSlice';
 import { useAppDispatch } from '../../../../hooks';
 import React from 'react';
 import { deleteLocalStreak } from '../../../store/slices/localStreakSlice';
 
 
-const DeleteButton = ({ id, isShared }) => {
+const DeleteButton = ({ streakUUID, isShared }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
 
     if(isShared)
     {
-      dispatch(deleteStreakBackend(id));
+      dispatch(deleteStreakBackend(streakUUID));
 
     } else 
     {
-      dispatch(deleteLocalStreak(id))
+      dispatch(deleteLocalStreak(streakUUID))
     }
   };
 
   return (
-    <TouchableOpacity style={styles.pendingButton} onPress={handleClick}>
+    <TouchableOpacity style={styles.deleteButton} onPress={handleClick}>
       <Ionicons name="trash" size={32} color="white" />
     </TouchableOpacity>
   );
@@ -31,7 +31,7 @@ const DeleteButton = ({ id, isShared }) => {
 export default DeleteButton;
 
 const styles = StyleSheet.create({
-  pendingButton: {
+  deleteButton: {
     backgroundColor: 'red',
     borderRadius: 50,
     padding: 7,

@@ -19,9 +19,9 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    updateAuth: (state, action: PayloadAction<{ email: string, isSignedIn: boolean, uuid: string }>) => {
-      state.authEmail = action.payload.email;
-      state.authUUID =action.payload.uuid;
+    updateAuth: (state, action: PayloadAction<{ authEmail: string, isSignedIn: boolean, authUUID: string }>) => {
+      state.authEmail = action.payload.authEmail;
+      state.authUUID =action.payload.authUUID;
       state.isSignedIn = action.payload.isSignedIn;
 
     },

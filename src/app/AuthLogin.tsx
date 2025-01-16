@@ -15,14 +15,16 @@ const AuthLogin = () => {
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+
         const user = userCredential.user;
-        dispatch(updateAuth({email: user.email, uuid:user.uid, isSignedIn: true}))
+        dispatch(updateAuth({ authEmail: user.email, isSignedIn: true, authUUID: user.uid}));
         navigation.navigate('index');
 
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
       });
   };
 
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10,
+    
   },
   buttonText: {
     color: '#fff',

@@ -10,7 +10,6 @@ const AuthPage = () => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
