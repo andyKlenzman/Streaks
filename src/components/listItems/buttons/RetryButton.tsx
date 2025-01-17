@@ -10,13 +10,17 @@ interface ListButtonProps {
 
 const RetryButton: FC<ListButtonProps> = ({ id }) => {
   const dispatch = useAppDispatch();
+
+
+
+  
   const handleClick = () => {
     dispatch(retryStreak(id));
   };
 
   return (
     <TouchableOpacity style={styles.retryButton} onPress={handleClick}>
-      <Ionicons name="md-refresh" size={24} color="green" />
+      <Ionicons name="refresh" size={24} color="green" />
     </TouchableOpacity>
   );
 };

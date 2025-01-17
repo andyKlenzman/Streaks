@@ -10,7 +10,8 @@ const initialState: LocalStreaks = {
 // Helper function to find a streak by ID
 const findStreakById = (state: LocalStreaks, id: string) => {
   const index = state.streaks.findIndex((streak) => streak.streakUUID === id);
-  if (index === -1) {
+  if (index === -1) 
+  {
     console.error(`Streak with ID ${id} not found.`);
     return null;
   }

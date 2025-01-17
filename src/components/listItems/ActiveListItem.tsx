@@ -2,40 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../../hooks';
 import { changeStreakStatus } from '../../store/slices/streaksSlice';
 import { openStreak } from '../../store/slices/uiSlice';
-import DeleteButton from './buttons/DeleteButton';
 import PendingStreakButton from './buttons/PendingStreakButton';
-import { parseTime, getTimeUntilStreakBroken } from '../../logic/timeUtils';
 import ListItem from './ListItem';
-import { isStreakExpired } from '../../logic/time/streakTimeLogic';
+import { ListItemInstance } from './ListItemInterface';
 
 
 
-const ActiveListItem = ({ title, count, lastTimeUpdated, id }) => {
+const ActiveListItem : React.FC<ListItemInstance> = ({streak , backgroundColor}) => {
 
-  const dispatch = useAppDispatch();
-  const [subtitle, setSubtitle] = useState('');
-  const checkTimeRateMS = 10000;
-
-  useEffect(() => {
- 
-  let isStreakExpired = isStreakExpired(new Date(lastTimeUpdated));
-
-  }, []);
-
-  const renderRightActions = () => (
-    <DeleteButton id={id} />
-  );
 
   return (
     <ListItem
-      title={title}
-      count={count}
-      subtitle={subtitle}
-      renderRightActions={renderRightActions}
-      renderActionButton={() => <PendingStreakButton id={id} />}
-      onSwipeableOpen={() => dispatch(openStreak(id))}
-      onSwipeableClose={() => dispatch(openStreak(''))}
-    />
+    title={streak.title}
+    count={streak.count}
+    subtitle="press to complete"
+    actionButton={() => <PendingStreakButton id={streak.streakUUID} />}
+    streak={streak}
+    backgroundColor={backgroundColor}
+  />
   );
 };
 

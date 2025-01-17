@@ -1,11 +1,10 @@
 import React from 'react';
 import { useAppDispatch } from '../../../hooks';
-import { changeStreakStatus } from '../../store/slices/streaksSlice';
 import CompleteButton from './buttons/CompleteButton';
 import ListItem from './ListItem';
-import { Streak } from '../../shared/interfaces/streak.interface';
+import { ListItemInstance } from './ListItemInterface';
 
-const CompleteListItem = ({streak , backgroundColor}) => {
+const CompleteListItem : React.FC<ListItemInstance> = ({streak , backgroundColor}) => {
   const dispatch = useAppDispatch();
 
   return (
