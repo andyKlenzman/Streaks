@@ -11,7 +11,7 @@ const BrokenListItem : React.FC<ListItemInstance> = ({streak , backgroundColor})
       title={streak.title}
       count={streak.count}
       subtitle="broken"
-      actionButton={() => <RetryButton />}
+      actionButton={() => <RetryButton id={streak.streakUUID} />}
       streak={streak}
       backgroundColor={backgroundColor}
 

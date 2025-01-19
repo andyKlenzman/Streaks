@@ -1,7 +1,7 @@
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useAppDispatch } from '../../../../hooks';
-import { retryStreak } from '../../../store/slices/streaksSlice';
+import { retryLocalStreakById } from '../../../store/slices/localStreakSlice';
 import { buttonStyles as styles } from './buttonStyles';
 
 interface ListButtonProps {
@@ -15,7 +15,7 @@ const RetryButton: FC<ListButtonProps> = ({ id }) => {
 
   
   const handleClick = () => {
-    dispatch(retryStreak(id));
+    dispatch(retryLocalStreakById(id));
   };
 
   return (

@@ -58,7 +58,6 @@ export const localStreakSlice = createSlice({
       state.streaks.push(newStreak);
     },
 
-    // Delete a streak by ID
     deleteLocalStreak: (state, action: PayloadAction<string>) => {
       const index = findStreakById(state, action.payload);
       if (index !== null) state.streaks.splice(index, 1);
@@ -108,6 +107,22 @@ export const localStreakSlice = createSlice({
       const index = findStreakById(state, id);
       if (index !== null) state.streaks[index].lastTimeCompleted = timestamp;
     },
+
+     retryLocalStreakById: (state, action: PayloadAction<{ id: string;}>) => {
+      const { id } = action.payload;
+      
+      const index = findStreakById(state, action.payload);
+      if (index !== null) {
+        
+        state.streaks[index] = {
+          ...state.streaks[index],
+          count: 0,
+          lastTimeCompleted: new Date().toISOString(),
+          status: 'isReady', // Update status directly here
+        };
+      }
+    },
+
   },
 });
 
@@ -130,6 +145,7 @@ export const {
   updateAllStreakStatuses,
   incrementLocalStreakCountById,
   updateLocalStreakLastTimeCompletedById,
+  retryLocalStreakById
 } = localStreakSlice.actions;
 
 export default localStreakSlice.reducer;
