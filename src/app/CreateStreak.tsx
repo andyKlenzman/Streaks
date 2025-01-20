@@ -28,9 +28,15 @@ const CreateStreak = () => {
   const [allowError, setAllowError] = useState(false);
   const creatorUUID = useAppSelector(selectAuthUUID);
 
+
+
   useEffect(() => {
-    // Focus input on mount
-    inputRef.current?.focus();
+
+    const timeout = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+    return () => clearTimeout(timeout);
+
   }, []);
 
   const initialValues: StreakFormInput = { title: '' };
@@ -48,11 +54,13 @@ const CreateStreak = () => {
     try {
       dispatch(createLocalStreak({ ...values, creatorUUID }));
       resetForm();
-      navigation.replace('index'); // Use replace to prevent stacking
+      navigation.goBack();
     } catch (error) {
       console.error(error); // Handle error if needed
     }
   };
+
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
