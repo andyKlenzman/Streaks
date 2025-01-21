@@ -1,69 +1,69 @@
+import { Streak } from "../../shared/interfaces/streak.interface";
+import { getTimeDifference } from "./timeUtils";
+
+type ISOtimestamp = string;
+
 /**
- * This file contains the core logic determining the status of a Streak
- * and utilities for understanding the time status of the streak
+ * If a streak was completed on/after 2 AM (local), the due date is 2 days later at 2 AM;
+ * otherwise it's 1 day later at 2 AM. 
  */
-
-
-import { getTimeDifference } from "./timeUtils"
-
-
-export const getStreakExpirationTime = (lastTimeCompleted:ISOtimestamp): Date => {
-    let expirationTime: Date
-    
-    // if the Streak was completed within 2:00:00AM and 11:59:59PM, the streak is due in 2 days at 2AM.
-    if(lastTimeCompleted.getHours() >= 2 && 
-      (lastTimeCompleted.getHours() < 24 && 
-      lastTimeCompleted.getMinutes() <59 && 
-      lastTimeCompleted.getSeconds() < 59))
-    {
-        lastTimeCompleted.setDate(lastTimeCompleted.getDate() +2)
-    }
-  
-    // if the streak was completed before 2AM, the day needs only be incremented by one.
-    if(lastTimeCompleted.getHours() < 2) 
-    {
-        lastTimeCompleted.setDate(lastTimeCompleted.getDate() + 1)
-        expirationTime = lastTimeCompleted
-    }
-  
-    // set the due date to 2am
-    lastTimeCompleted.setHours(2, 0, 0, 0) 
-  
-    expirationTime = lastTimeCompleted
-  
-    return expirationTime
+export const getStreakExpirationTime = (lastTimeStr: ISOtimestamp): Date => {
+  const date = new Date(lastTimeStr); // note: date allows us to put the UTC time into local
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid lastTimeCompleted date");
   }
-  
 
-
-
-
-// returns the delta between current time and last time completed. 
-  export const getStreakExpirationTimeDelta = (lastTimeCompleted:ISOtimestamp): Date => {
-    let delta: Date
-    const currentTime = new Date();
-  
-    delta = getTimeDifference(lastTimeCompleted.getTime(), currentTime.getTime());
-  
-    return delta
+  if (date.getHours() >= 2) {
+    date.setDate(date.getDate() + 2);
+  } else {
+    date.setDate(date.getDate() + 1);
   }
-  
+  date.setHours(2, 0, 0, 0); 
+  return date;
+};
 
+/**
+ * Returns a Date representing the difference between now (local time) and last completion.
+ */
+export const getStreakExpirationTimeDelta = (lastTimeStr: ISOtimestamp): Date => {
+  const lastTime = new Date(lastTimeStr);
+  if (isNaN(lastTime.getTime())) {
+    throw new Error("Invalid lastTimeCompleted date");
+  }
+  return getTimeDifference(lastTime.getTime(), Date.now());
+};
 
-  
-export const isStreakExpired = (lastTimeCompleted: ISOtimestamp): boolean => {
-      const delta = getStreakExpirationTimeDelta(lastTimeCompleted);
-  
-      // Check if the time delta is less than or equal to zero
-      return delta.getTime() <= 0;
-  };
-  
+/**
+ * A streak is expired if the time remaining until its expiration is <= 0.
+ */
+export const isStreakExpired = (lastTimeStr: ISOtimestamp): boolean => {
+  return getStreakExpirationTimeDelta(lastTimeStr).getTime() <= 0;
+};
 
-// determines if the streak has been recently completed, and if so, disables
-// the ability to complete the streak until the next available time when it is
-// After 2 am local time it is activated
-// Determines if the streak is complete based on time (after 2 AM)
-export const getIsStreakUIComplete = (): boolean => {
-  const currentTime = new Date();
-  return currentTime.getHours() > 2;
+/**
+ * Create a "streak day index" by shifting the boundary to 2 AM local.
+ * If it's before 2 AM local time, treat it as the previous calendar day.
+ * We return a simple "year-month-day" string to compare.
+ */
+function getLocalStreakDayIndex(date: Date): string {
+  const d = new Date(date);
+  if (d.getHours() < 2) {
+    d.setDate(d.getDate() - 1);
+  }
+  return [d.getFullYear(), d.getMonth(), d.getDate()].join("-");
+}
+
+/**
+ * A user can complete a streak again if we're on a different "streak day"
+ * than when they last completed. That switch happens at 2 AM local.
+ */
+export const isStreakCompletable = (streak: Streak): boolean => {
+  if (!streak?.lastTimeCompleted) return false;
+
+  const lastTime = new Date(streak.lastTimeCompleted);
+  if (isNaN(lastTime.getTime())) return false;
+
+  const currentDayIndex = getLocalStreakDayIndex(new Date());
+  const lastCompletionIndex = getLocalStreakDayIndex(lastTime);
+  return currentDayIndex !== lastCompletionIndex;
 };

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import RetryButton from './buttons/RetryButton';
-import ListItem from './ListItem';
-import { ListItemInstance } from './ListItemInterface';
+import RetryButton from '../buttons/RetryButton';
+import ListItem from './_ListItem';
+import { ListItemInstance } from './_ListItemInterface';
 
 const BrokenListItem : React.FC<ListItemInstance> = ({streak , backgroundColor}) => {
 

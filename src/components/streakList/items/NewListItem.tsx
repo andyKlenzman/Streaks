@@ -1,8 +1,8 @@
 import React from 'react';
-import PendingStreakButton from './buttons/PendingStreakButton';
-import ListItem from './ListItem';
+import PendingStreakButton from '../buttons/ActiveStreakButton';
+import ListItem from './_ListItem';
 
-import { ListItemInstance } from './ListItemInterface';
+import { ListItemInstance } from './_ListItemInterface';
 
 const NewListItem: React.FC<ListItemInstance> = ({ streak, backgroundColor }) => {
 

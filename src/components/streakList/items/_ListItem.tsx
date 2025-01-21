@@ -1,11 +1,10 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { listItemStyles as styles } from './listItemStyles';
-import { useAppDispatch } from '../../../hooks';
-import { openStreak } from '../../store/slices/uiSlice';
-
-import DeleteButton from './buttons/DeleteButton';
+import { listItemStyles as styles } from '../styles/listItemStyles';
+import { useAppDispatch } from '../../../../hooks';
+import { openStreak } from '../../../store/slices/uiSlice';
+import DeleteButton from '../buttons/DeleteButton';
 
 
 const ListItem = ({

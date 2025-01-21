@@ -1,7 +1,4 @@
-  
-  
-  
-    export const getTimeUntilStatusChange = (time:ISOtimestamp) => {
+export const getTimeUntilStatusChange = (time:ISOtimestamp) => {
         let timeObj = new Date(time)
         let timeWhenStatusChanges
         if(timeObj.getHours() <= 2){

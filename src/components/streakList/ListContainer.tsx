@@ -1,19 +1,17 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Text } from 'react-native';
-
-import PendingListItem from '../listItems/ActiveListItem';
-import BrokenListItem from '../listItems/BrokenListItem';
-import CompleteListItem from '../listItems/CompleteListItem';
-import NewListItem from '../listItems/NewListItem';
-
-
+import { FlatList, StyleSheet} from 'react-native';
+import BrokenListItem from './items/BrokenListItem';
+import CompleteListItem from './items/CompleteListItem';
+import NewListItem from './items/NewListItem';
 import { useAppSelector } from '../../../hooks';
 import { selectAllLocalStreaks } from '../../store/selectors/localStreakSelectors';
-import { getIsStreakUIComplete } from '../../logic/time/streakTimeLogic';
+import { isStreakCompletable } from '../../logic/time/streakTimeLogic';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Streak } from '../../shared/interfaces/streak.interface';
+import ActiveListItem from './items/ActiveListItem';
 
 const ListContainer = () => {
+
   const localStreaks = useAppSelector(selectAllLocalStreaks);
 
   return (
@@ -45,20 +43,18 @@ const styles = StyleSheet.create({
 });
 
 const StreakListItem = ({ streak, index }: { streak: Streak; index: number }) => {
-  // Determine the background color for alternating rows
+  // alternating background color
   const backgroundColor =
     index % 2 === 0
       ? styles.whiteBackground.backgroundColor
       : styles.beigeBackground.backgroundColor;
 
-  // Determine if the streak is complete based on time state
-  const isStreakComplete = getIsStreakUIComplete(streak);
+  const showActive = isStreakCompletable(streak);
 
-  // Select the appropriate component based on streak status and completeness
-  const Component = getComponentForStreak(streak, isStreakComplete);
+  const Component = getComponentForStreak(streak, showActive);
 
-  // Handle unknown or invalid statuses gracefully
-  if (!Component) {
+  if (!Component) 
+  {
     console.error('Could not determine List Item component for Streak:', streak);
     return null;
   }
@@ -68,14 +64,14 @@ const StreakListItem = ({ streak, index }: { streak: Streak; index: number }) =>
 
 const getComponentForStreak = (
   streak: Streak,
-  isStreakComplete: boolean
+  showActive: boolean
 ): React.FC<{ streak: Streak; backgroundColor: string }> | null => {
   switch (streak.status) {
     case 'isReady':
       return NewListItem;
       break;
     case 'isActive':
-      return isStreakComplete ? CompleteListItem : PendingListItem;
+      return showActive ? ActiveListItem : CompleteListItem;
     case 'isBroken':
       return BrokenListItem;
     default:
