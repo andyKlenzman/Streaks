@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link, useNavigation } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import ListContainer from '../components/streakList/ListContainer';
 import { useLayoutEffect } from 'react';
 
@@ -11,11 +11,22 @@ const HomeLayout = () => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
+    // set dynamic scroll view based on height of the footer to avoid list items hiding behind footer
+    const [footerHeight, setFooterHeight] = useState(0);
+
+    const onFooterLayout = (event: LayoutChangeEvent) => {
+      const { height } = event.nativeEvent.layout;
+      setFooterHeight(height);
+    };
+
   return (
     <View style={styles.container}>
-      <ListContainer />
+      <ScrollView contentContainerStyle={{ paddingBottom: footerHeight }}>
+        <ListContainer />
+      </ScrollView>
 
-      <View style={styles.footer}>
+
+      <View style={styles.footer} onLayout={onFooterLayout}>
         <View style={styles.row}>
           <Link href="/CreateStreak" style={styles.createButton}>
             Create

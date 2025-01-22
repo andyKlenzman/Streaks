@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet} from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import BrokenListItem from './items/BrokenListItem';
 import CompleteListItem from './items/CompleteListItem';
 import NewListItem from './items/NewListItem';
@@ -11,7 +11,6 @@ import { Streak } from '../../shared/interfaces/streak.interface';
 import ActiveListItem from './items/ActiveListItem';
 
 const ListContainer = () => {
-
   const localStreaks = useAppSelector(selectAllLocalStreaks);
 
   return (
@@ -23,6 +22,7 @@ const ListContainer = () => {
         )}
         keyExtractor={(item) => item.streakUUID}
         nestedScrollEnabled
+        inverted // Hier wird die Liste umgekehrt
       />
     </GestureHandlerRootView>
   );
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
 });
 
 const StreakListItem = ({ streak, index }: { streak: Streak; index: number }) => {
-  // alternating background color
+  // Abwechselnde Hintergrundfarbe
   const backgroundColor =
     index % 2 === 0
       ? styles.whiteBackground.backgroundColor
@@ -53,9 +53,8 @@ const StreakListItem = ({ streak, index }: { streak: Streak; index: number }) =>
 
   const Component = getComponentForStreak(streak, showActive);
 
-  if (!Component) 
-  {
-    console.error('Could not determine List Item component for Streak:', streak);
+  if (!Component) {
+    console.error('Konnte keine passende List Item Komponente für Streak finden:', streak);
     return null;
   }
 
@@ -69,12 +68,11 @@ const getComponentForStreak = (
   switch (streak.status) {
     case 'isReady':
       return NewListItem;
-      break;
     case 'isActive':
       return showActive ? ActiveListItem : CompleteListItem;
     case 'isBroken':
       return BrokenListItem;
     default:
-      return null; // Unknown status
+      return null; // Unbekannter Status
   }
 };
