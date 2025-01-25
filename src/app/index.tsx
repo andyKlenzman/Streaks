@@ -1,88 +1,205 @@
-import React, {useState} from 'react';
-import { Link, useNavigation } from 'expo-router';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+  Keyboard,
+  Text,
+  LayoutAnimation,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { createLocalStreak } from '../store/slices/localStreakSlice';
 import ListContainer from '../components/streakList/ListContainer';
-import { useLayoutEffect } from 'react';
+import { useNavigation } from 'expo-router';
+
+
+
+
 
 const HomeLayout = () => {
+  const dispatch = useDispatch();
+  const [isCreating, setIsCreating] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<TextInput | null>(null);
   const navigation = useNavigation();
-  useLayoutEffect(() => {
+
+  React.useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-    // set dynamic scroll view based on height of the footer to avoid list items hiding behind footer
-    const [footerHeight, setFooterHeight] = useState(0);
 
-    const onFooterLayout = (event: LayoutChangeEvent) => {
-      const { height } = event.nativeEvent.layout;
-      setFooterHeight(height);
+  const runLayoutAnimation = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  };
+
+  // handles when the create button is pressed
+  const handleCreatePress = () => {
+    runLayoutAnimation();
+    setIsCreating(true);
+  };
+
+
+  const handleAddItem = () => {
+    if (!inputValue.trim()) return;
+    dispatch(createLocalStreak({ title: inputValue.trim(), creatorUUID: 'some-static-uuid' }));
+    setInputValue('');
+    setIsCreating(false);
+    Keyboard.dismiss();
+    runLayoutAnimation();
+  };
+
+  //slight delay in the  animation
+  useEffect(() => {
+    if (isCreating) 
+    {
+      const timer = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isCreating]);
+
+
+  useEffect(() => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+
+    return () => {
+      hideSubscription.remove();
     };
+  }, []);
+
+  const handleKeyboardHide = event => {
+    setIsCreating(false)
+    runLayoutAnimation();
+    console.log("yo")
+
+  };
+
+
+
+
+
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ paddingBottom: footerHeight }}>
-        <ListContainer />
-      </ScrollView>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={'padding'}
+      keyboardVerticalOffset={20}  //ToDo: machen dynamisch
+    >
+      <View style={styles.inner}>
+        {/* ——— Scrollable List Area ——— */}
+        <View
+          style={[
+            styles.listContainer,
+            isCreating && { opacity: 0.5 },
+          ]}
+          pointerEvents={isCreating ? 'none' : 'auto'}
+        >
+          <ListContainer />
+        </View>
 
-
-      <View style={styles.footer} onLayout={onFooterLayout}>
-        <View style={styles.row}>
-          <Link href="/CreateStreak" style={styles.createButton}>
-            Create
-          </Link>
-          <TouchableOpacity
-            style={styles.settingsButton}
-            onPress={() => navigation.navigate('settings')}
-          >
-            <Ionicons name="settings-sharp" size={24} color="white" />
-          </TouchableOpacity>
+        {/* ——— Footer ——— */}
+        <View style={styles.footer}>
+          {isCreating ? (
+            <View style={styles.inputContainer}>
+              <TextInput
+                ref={inputRef}
+                style={styles.input}
+                placeholder="Enter streak name"
+                value={inputValue}
+                onChangeText={setInputValue}
+                onSubmitEditing={handleAddItem}
+                returnKeyType="done"
+              />
+              <TouchableOpacity style={styles.enterButton} onPress={handleAddItem}>
+                <Ionicons name="checkmark-sharp" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.row}>
+              <TouchableOpacity style={styles.createButton} onPress={handleCreatePress}>
+                <Text style={styles.createButtonText}>Create</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.settingsButton}>
+                <Ionicons name="settings-sharp" size={24} color="white" />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default HomeLayout;
 
-/* ---------------------------
-   Updated Styles
----------------------------- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+    backgroundColor: '#f8f8f8',
+  },
+  inner: {
+    flex: 1,
+  },
+  listContainer: {
+    flex: 1,
   },
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#fff',
     padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#ccc',
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   createButton: {
-    flex: 1, // Take most of the space
+    flex: 1,
     paddingVertical: 15,
     paddingHorizontal: 20,
     backgroundColor: '#3498db',
     borderRadius: 8,
-    textAlign: 'center',
+    alignItems: 'center',
+  },
+  createButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },
   settingsButton: {
-    width: 50, // Fixed square size
+    width: 50,
     height: 50,
     backgroundColor: '#3498db',
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10, // Spacing between buttons
+    marginLeft: 10,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+  },
+  enterButton: {
+    marginLeft: 10,
+    backgroundColor: '#3498db',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -29,7 +29,9 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // Configure store with persisted reducer
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+  }).concat(thunk),
   preloadedState: undefined,
   devTools: false,
   enhancers: getDefaultEnhancers => getDefaultEnhancers.concat(devToolsEnhancer())

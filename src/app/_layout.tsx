@@ -9,6 +9,9 @@ import { store, persistor } from '../store/store';
 import { useAppDispatch } from '../../hooks';
 import { updateAuth } from '../store/slices/authSlice';
 
+
+
+// keeps the auth state in sync
 function AuthListener() {
   const dispatch = useAppDispatch();
 
@@ -44,9 +47,8 @@ function AuthListener() {
 
 
 
-
+// updates the status of streaks periodically
 import { updateAllStreakStatusesThunk } from '../store/slices/localStreakSlice';
-
 const StreakUpdater = () => {
   const dispatch = useAppDispatch();
 
@@ -54,7 +56,6 @@ const StreakUpdater = () => {
 
 
   useEffect(() => {
-    // Update streak statuses every 5 minutes
     const interval = setInterval(() => {
       dispatch(updateAllStreakStatusesThunk());
     }, 300000); // 5 minutes
@@ -77,9 +78,8 @@ export default function Layout() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SafeAreaView style={{ flex: 1 }}>
-          {/* AuthListener keeps the state in sync */}
           <StreakUpdater />
-          <AuthListener />
+          <AuthListener /> 
           <Stack />
         </SafeAreaView>
       </PersistGate>
