@@ -1,11 +1,10 @@
-import React from 'react';
-import { Text, View, Animated } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { Text, View } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { listItemStyles as styles } from '../styles/listItemStyles';
-import { useAppDispatch } from '../../../../hooks';
+import { useAppDispatch, useAppSelector } from '../../../../hooks';
 import { openStreak } from '../../../store/slices/uiSlice';
 import DeleteButton from '../buttons/DeleteButton';
-
+import { listItemStyles as styles } from '../styles/listItemStyles';
 
 const ListItem = ({
   title,
@@ -13,40 +12,50 @@ const ListItem = ({
   subtitle,
   actionButton,
   backgroundColor,
-  streak
+  streak,
 }) => {
   const dispatch = useAppDispatch();
+  const openStreakId = useAppSelector((state) => state.ui);
 
+  // Ref to programmatically control closing
+  const swipeableRef = useRef<ReanimatedSwipeable>(null);
 
+  // Automatically close this item if a different streak is opened
+  useEffect(() => {
+    if (openStreakId && openStreakId !== streak.streakUUID) {
+      swipeableRef.current?.close();
+    }
+  }, [openStreakId, streak.streakUUID]);
 
   return (
     <View>
       <ReanimatedSwipeable
+        ref={swipeableRef}
         renderRightActions={() => (
           <View style={styles.deleteButtonContainer}>
             <DeleteButton streakUUID={streak.streakUUID} />
           </View>
         )}
-        // Keep the swipe from going beyond a certain distance
-        rightThreshold={80}
-        // Disable overshoot
+        rightThreshold={0}
+
         overshootLeft={false}
         overshootRight={false}
-        // Adjust friction so it doesn’t fling too far
-        friction={1}
-        onSwipeableOpen={() => dispatch(openStreak(streak.streakUUID))}
+        onSwipeableOpenStartDrag={() => dispatch(openStreak(streak.streakUUID))}
         onSwipeableClose={() => dispatch(openStreak(''))}
       >
         <View style={[styles.parentContainer, { backgroundColor }]}>
-          <View style={styles.textContainer}>
-            <Text 
+          {/* Top row (centered title) */}
+          <View style={styles.topContainer}>
+            <Text
+              style={styles.textMain}
               numberOfLines={1}
               ellipsizeMode="tail"
-              style={styles.textMain}
             >
               {title}
             </Text>
           </View>
+
+          {/* Bottom row (subtitle on left, count + optional button on right) */}
           <View style={styles.bottomContainer}>
             <Text style={styles.textSecondary}>{subtitle}</Text>
             <View style={styles.dayCountAndButtonContainer}>
@@ -61,3 +70,53 @@ const ListItem = ({
 };
 
 export default ListItem;
+
+
+export default ListItem;
+// listItemStyles.ts
+import { StyleSheet } from 'react-native';
+
+export const listItemStyles = StyleSheet.create({
+  parentContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    justifyContent: 'center',
+  },
+  topContainer: {
+    // Center the title horizontally and reduce spacing
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  bottomContainer: {
+    // Place subtitle on the left, day count & action button on the right
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textMain: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  textSecondary: {
+    fontSize: 14,
+    color: '#666',
+  },
+  dayCountAndButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dayCount: {
+    marginRight: 8,
+    fontSize: 14,
+    color: '#333',
+  },
+  deleteButtonContainer: {
+    // Style for the delete area
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 70,
+    backgroundColor: '#e74c3c',
+  },
+});
