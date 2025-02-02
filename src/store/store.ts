@@ -18,8 +18,8 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['localStreaks', 'auth'], // Persist 'streaks' and 'auth' slices
-  blacklist: ['ui'],
+  whitelist: ['localStreaks', 'auth', 'ui'], // Persist 'streaks' and 'auth' slices
+  blacklist: [],
   stateReconciler: autoMergeLevel1, 
 };
 

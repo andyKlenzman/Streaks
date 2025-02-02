@@ -18,7 +18,6 @@ const findStreakById = (state: LocalStreaks, id: string) => {
   return index;
 };
 
-// Utility function to determine streak status
 const determineStreakStatus = (streak: Streak): Streak['status'] => {
   const now = new Date().getTime();
   const lastCompletedTime = new Date(streak.lastTimeCompleted).getTime();
@@ -28,7 +27,8 @@ const determineStreakStatus = (streak: Streak): Streak['status'] => {
     return 'isBroken'; // Streak is permanently broken
   }
 
-  if (now - lastCompletedTime > twentyFourHours) {
+  if (now - lastCompletedTime > twentyFourHours) 
+  {
     return 'isBroken'; // Streak expired
   }
 
@@ -39,6 +39,11 @@ const determineStreakStatus = (streak: Streak): Streak['status'] => {
   return 'isReady'; // Streak is ready to start
 };
 
+
+
+
+
+
 export const localStreakSlice = createSlice({
   name: 'localStreaks',
   initialState,
@@ -47,7 +52,7 @@ export const localStreakSlice = createSlice({
     createLocalStreak: (state, action: PayloadAction<Omit<Streak, 'streakUUID' | 'lastTimeCompleted' | 'count' | 'status'>>) => {
       const newStreak: Streak = {
         streakUUID: uuid.v4() as string,
-        creatorUUID: action.payload.creatorUUID,
+        creatorUUID: '',
         partnerUUID: '',
         title: action.payload.title,
         count: 0,

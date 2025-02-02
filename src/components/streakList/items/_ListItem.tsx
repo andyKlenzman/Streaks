@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../hooks';
 import { openStreak } from '../../../store/slices/uiSlice';
 import DeleteButton from '../buttons/DeleteButton';
 import { listItemStyles as styles } from '../styles/listItemStyles';
-
+import { selectOpenStreak } from '../../../store/selectors/selectOpenStreak';
 const ListItem = ({
   title,
   count,
@@ -15,7 +15,7 @@ const ListItem = ({
   streak,
 }) => {
   const dispatch = useAppDispatch();
-  const openStreakId = useAppSelector((state) => state.ui);
+  const openStreakId = useAppSelector(selectOpenStreak);
 
   // Ref to programmatically control closing
   const swipeableRef = useRef<ReanimatedSwipeable>(null);

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,17 +11,15 @@ import {
   Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createLocalStreak } from '../store/slices/localStreakSlice';
 import ListContainer from '../components/streakList/ListContainer';
 import { useNavigation } from 'expo-router';
-
-
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
-import { Platform } from 'react-native';
-import *  as Constant from 'expo-constants'
-
+import EmptyStreaksScreen from '../components/noStreaksScreen/EmptyScreen';
+import { selectAllLocalStreaks } from '../store/selectors/localStreakSelectors'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FirstTimeIntro } from '../components/intro/FirstTimeIntro';
+import { hideIntro, resetIntro } from '../store/slices/uiSlice';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -31,87 +29,25 @@ const HomeLayout = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+
   const [isCreating, setIsCreating] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
-  // Animation value
+  const showIntro = useSelector((state: RootState) => state.ui.showIntro); // Read intro state from Redux
+
+
+  const streaks = useSelector(selectAllLocalStreaks); 
+
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
-  // Reference to the TextInput
   const inputRef = useRef<TextInput | null>(null);
 
-  //////////////////////////////////////////////////////////////
-//// NOTIFICATIONS
-//////////////////////////////////////////////////////////////
+  // for testing
+  // React.useEffect(() => {
 
+  //   dispatch(resetIntro())
+    
+  // }, []);
 
-async function registerForPushNotificationsAsync() {
-
-  // checks it is not a simulator
-  if (Device.isDevice) 
-  {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
-      return;
-    }
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    if (!projectId) {
-      handleRegistrationError('Project ID not found');
-    }
-    try {
-      const pushTokenString = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
-      console.log(pushTokenString);
-      return pushTokenString;
-    } catch (e: unknown) {
-      handleRegistrationError(`${e}`);
-    }
-  } else {
-    handleRegistrationError('Must use physical device for push notifications');
-  }
-}
-
-
-
-function handleRegistrationError(errorMessage: string) {
-  alert(errorMessage);
-  throw new Error(errorMessage);
-}
-
-
-
-// Function to schedule a local notification
-async function scheduleLocalNotification() 
-{
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Scheduled Notification', // can make custom messages here, can"t wait until I can update and fuck w people 
-      body: 'This is a notification scheduled based on a condition.',
-    },
-    trigger: {
-      seconds: 3600, // Schedule to trigger in 1 hour - make conditional based on time to go. Only schedule when they have a streak going.
-    },
-  });
-}
-
-// Example condition check
-function checkConditionAndSchedule() 
-{ // IF streak exists, one of is active, and they have asked for notifications.
-
-  const conditionMet = /* your condition logic */;
-  if (conditionMet) {
-    scheduleLocalNotification();
-  }
-}
 
 
   React.useEffect(() => {
@@ -156,8 +92,7 @@ function checkConditionAndSchedule()
 
     dispatch(
       createLocalStreak({
-        title: trimmedValue,
-        creatorUUID: 'some-static-uuid',
+        title: trimmedValue
       })
     );
     closeCreateOverlay();
@@ -165,14 +100,18 @@ function checkConditionAndSchedule()
 
   return (
     <View style={styles.container}>
+      {showIntro && <FirstTimeIntro onDismiss={() => dispatch(hideIntro())} />}
       {/* Main content */}
+      
       <View style={styles.listContainer}>
-        <ListContainer />
+        {streaks?.length > 0 ? <ListContainer /> : <EmptyStreaksScreen />}
       </View>
 
       <View style={styles.footer}>
         <View style={styles.row}>
-          <Pressable
+
+      {/* Settings button  */}
+          {/* <Pressable
             onPress={() => navigation.navigate('settings')}
             style={({ pressed }) => [
               styles.settingsButton,
@@ -180,7 +119,7 @@ function checkConditionAndSchedule()
             ]}
           >
             <Ionicons name="settings-sharp" size={24} color="white" />
-          </Pressable>
+          </Pressable> */}
 
           <Pressable
             onPress={openCreateOverlay}
@@ -275,12 +214,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   createButton: {
-    paddingVertical: 20,
+    paddingVertical: 18,
     paddingHorizontal: 20,
-    backgroundColor: '#3498db',
-    borderRadius: 8,
+    backgroundColor: '#0099ff',
+    borderRadius: 10,
     alignItems: 'center',
-    width: 265,
+    width: "100%",
 
 
   },
@@ -340,12 +279,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   enterButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '#0099ff',
     borderRadius: 5,
-    padding: 12,
+    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 10,
+    marginTop: 12,
     // usw.
   },
 });

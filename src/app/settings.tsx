@@ -1,14 +1,21 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Switch, Alert } from 'react-native';
 import { useNavigation } from 'expo-router';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logOut, deleteAccount } from '../logic/auth/authActions';
+import { setNotifications } from '../store/slices/authSlice';
+import * as Notifications from 'expo-notifications';
 
 export default function SettingsScreen() {
+
+
+
+  
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
 
-  // Minimal array of actions
+  const [isEnabled, setIsEnabled] = useState(false);
+
   const buttons = [
     { label: 'Sign Up', onPress: () => navigation.navigate('/signup') },
     { label: 'Login', onPress: () => navigation.navigate('/login') },
@@ -16,9 +23,72 @@ export default function SettingsScreen() {
     { label: 'Delete Account', onPress: () => deleteAccount(dispatch, navigation) },
   ];
 
+  useEffect(() => {
+    // You could load the initial `enableNotifications` state from Redux once
+    // so the toggle reflects the user's current preference.
+    // Example:
+    // setIsEnabled(notificationsEnabled);
+
+
+
+
+
+
+  }, []);
+
+  const toggleSwitch = async () => {
+    const newValue = !isEnabled;
+    setIsEnabled(newValue);
+
+    if (newValue) 
+    {
+      // User wants to ENABLE notifications
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted')
+       {
+        Alert.alert('Permission Required', 'Notifications permissions not granted!');
+        // If permission is denied, revert toggle back off
+        setIsEnabled(false);
+      } else 
+      {
+        // Permission was granted
+        dispatch(setNotifications(true));
+      }
+    } else {
+      // User wants to DISABLE notifications
+      dispatch(setNotifications(false));
+    }
+  };
+
+
+
+
+
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
+
+      {/* Explanation or description of the toggle behavior */}
+      <View style={styles.toggleContainer}>
+        <Text style={styles.toggleLabel}>
+          Toggle Push Notifications:
+        </Text>
+        <Switch
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
+          thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+      </View>
+      <Text style={styles.description}>
+        {isEnabled
+          ? 'Push notifications are ON. You will receive updates.'
+          : 'Push notifications are OFF. You will not receive updates.'}
+      </Text>
+
+      {/* Additional settings buttons */}
       {buttons.map((btn) => (
         <TouchableOpacity
           key={btn.label}
@@ -32,6 +102,19 @@ export default function SettingsScreen() {
   );
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -42,6 +125,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 16,
     fontWeight: 'bold',
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  description: {
+    fontSize: 14,
+    marginBottom: 20,
+    color: 'gray',
   },
   button: {
     marginBottom: 12,

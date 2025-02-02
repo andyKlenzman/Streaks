@@ -1,7 +1,6 @@
 import { TouchableOpacity } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet } from 'react-native';
-import {  deleteStreakBackend } from '../../../store/slices/streaksSlice';
 import { useAppDispatch } from '../../../../hooks';
 import React from 'react';
 import { deleteLocalStreak } from '../../../store/slices/localStreakSlice';
@@ -11,14 +10,10 @@ const DeleteButton = ({ streakUUID, isShared }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
 
-    if(isShared)
-    {
-      dispatch(deleteStreakBackend(streakUUID));
 
-    } else 
-    {
+    
       dispatch(deleteLocalStreak(streakUUID))
-    }
+    
   };
 
   return (
