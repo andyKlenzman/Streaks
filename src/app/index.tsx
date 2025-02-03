@@ -35,7 +35,6 @@ const HomeLayout = () => {
 
   const showIntro = useSelector((state: RootState) => state.ui.showIntro); // Read intro state from Redux
 
-
   const streaks = useSelector(selectAllLocalStreaks); 
 
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
@@ -111,7 +110,7 @@ const HomeLayout = () => {
         <View style={styles.row}>
 
       {/* Settings button  */}
-          {/* <Pressable
+          <Pressable
             onPress={() => navigation.navigate('settings')}
             style={({ pressed }) => [
               styles.settingsButton,
@@ -119,7 +118,7 @@ const HomeLayout = () => {
             ]}
           >
             <Ionicons name="settings-sharp" size={24} color="white" />
-          </Pressable> */}
+          </Pressable>
 
           <Pressable
             onPress={openCreateOverlay}
@@ -206,8 +205,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   settingsButton: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     backgroundColor: '#636e72', // Slightly darker grey-blue
     borderRadius: 8,
     justifyContent: 'center',
@@ -219,7 +218,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0099ff',
     borderRadius: 10,
     alignItems: 'center',
-    width: "100%",
+    width: "80%",
 
 
   },

@@ -5,6 +5,15 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logOut, deleteAccount } from '../logic/auth/authActions';
 import { setNotifications } from '../store/slices/authSlice';
 import * as Notifications from 'expo-notifications';
+import { selectIsSignedIn } from '../store/selectors/authSelectors';
+
+
+
+import { GoogleAuthProvider } from 'firebase/auth';
+import auth from '@react-native-firebase/auth';
+
+
+
 
 export default function SettingsScreen() {
 
@@ -15,6 +24,7 @@ export default function SettingsScreen() {
   const navigation = useNavigation();
 
   const [isEnabled, setIsEnabled] = useState(false);
+  const isSignedIn = useAppSelector(selectIsSignedIn)
 
   const buttons = [
     { label: 'Sign Up', onPress: () => navigation.navigate('/signup') },
@@ -28,11 +38,6 @@ export default function SettingsScreen() {
     // so the toggle reflects the user's current preference.
     // Example:
     // setIsEnabled(notificationsEnabled);
-
-
-
-
-
 
   }, []);
 
@@ -70,7 +75,23 @@ export default function SettingsScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
 
-      {/* Explanation or description of the toggle behavior */}
+
+
+
+      {/* Auth Functionality*/}
+
+
+
+
+      <Text style={styles.description}>
+      {isSignedIn
+          ? 'Auth status: Signed in'
+          : 'Auth status: Not signed in'}
+      </Text>
+
+
+
+
       <View style={styles.toggleContainer}>
         <Text style={styles.toggleLabel}>
           Toggle Push Notifications:
@@ -87,6 +108,9 @@ export default function SettingsScreen() {
           ? 'Push notifications are ON. You will receive updates.'
           : 'Push notifications are OFF. You will not receive updates.'}
       </Text>
+
+
+      
 
       {/* Additional settings buttons */}
       {buttons.map((btn) => (

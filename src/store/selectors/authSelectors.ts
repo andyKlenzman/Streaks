@@ -8,3 +8,7 @@ export const selectAllAuthData = (state: RootState) => {
 export const selectAuthUUID = (state: RootState) => {
   return state.auth.authUUID;
 };
+
+export const selectIsSignedIn = (state: RootState) => {
+  return state.auth.isSignedIn;
+};
