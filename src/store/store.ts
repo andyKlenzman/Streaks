@@ -23,6 +23,8 @@ const persistConfig = {
   stateReconciler: autoMergeLevel1, 
 };
 
+
+
 // Create persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

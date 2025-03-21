@@ -4,16 +4,16 @@ import { updateAuth } from '../../store/slices/authSlice';
 
 
 
-export const logOut = async (dispatch, navigation) => {
+export const logOut = async (dispatch) => {
   try {
     await signOut(auth);
-    dispatch(updateAuth({email: "", uuid: "", isSignedIn: false}));
+    dispatch(updateAuth({authEmail: "", isSignedIn: false, authUUID: "", enableNotifications: false}));
     
-    navigation.navigate('AuthHome');
   } catch (error) {
     console.error('Sign out error:', error);
   }
 };
+
 
 export const deleteAccount = async (dispatch, navigation) => {
   try {
@@ -21,8 +21,8 @@ export const deleteAccount = async (dispatch, navigation) => {
 
     if (user) {
       await deleteUser(user);
-      dispatch(updateAuth({email: "", uuid: "", isSignedIn: false}));
-      navigation.navigate('AuthHome');
+      dispatch(updateAuth({authEmail: "", isSignedIn: false, authUUID: "", enableNotifications: false}));
+      
     } else {
       console.error('No user is currently signed in.');
     }

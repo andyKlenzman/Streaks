@@ -8,3 +8,7 @@ For developers
 This repo contains the frontend and backend
 - UUID: Unique User ID. Used to pair streaks with their creator.
 
+
+Dev Notes
+- Netowrking features developed with local simulator must use the simulator and not devices.
+- Pass auf! Wenn du den Hardware Tastentur auf dem Simulator verwendest, kann es seinem.

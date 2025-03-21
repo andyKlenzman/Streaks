@@ -10,8 +10,6 @@ const DeleteButton = ({ streakUUID, isShared }) => {
   const dispatch = useAppDispatch();
   const handleClick = () => {
 
-
-    
       dispatch(deleteLocalStreak(streakUUID))
     
   };

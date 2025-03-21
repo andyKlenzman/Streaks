@@ -1,3 +1,8 @@
+/**
+ * Auth Slice handles all data that is specific to the user
+ * account and their preferences. 
+ * 
+ */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Auth {
@@ -20,12 +25,13 @@ export const authSlice = createSlice({
   reducers: {
     updateAuth: (
       state,
-      action: PayloadAction<{ authEmail: string; isSignedIn: boolean; authUUID: string }>
+      action: PayloadAction<{ authEmail: string; isSignedIn: boolean; authUUID: string ; enableNotifications: boolean}>
     ) => {
       state.authEmail = action.payload.authEmail;
       state.authUUID = action.payload.authUUID;
       state.isSignedIn = action.payload.isSignedIn;
-      // state.enableNotifications = state.enableNotifications;
+      // state.enableNotifications = state.enableNotifications; // feature not yet implemented. 
+      state.enableNotifications = false;
     },
     logOut: (state) => {
       state.authEmail = "";

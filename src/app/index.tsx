@@ -15,12 +15,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createLocalStreak } from '../store/slices/localStreakSlice';
 import ListContainer from '../components/streakList/ListContainer';
 import { useNavigation } from 'expo-router';
-import EmptyStreaksScreen from '../components/noStreaksScreen/EmptyScreen';
+import EmptyStreaksScreen from '../components/extras/EmptyScreen';
 import { selectAllLocalStreaks } from '../store/selectors/localStreakSelectors'
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { FirstTimeIntro } from '../components/intro/FirstTimeIntro';
+import { FirstTimeIntro } from '../components/extras/FirstTimeIntro';
 import { hideIntro, resetIntro } from '../store/slices/uiSlice';
-
+import { selectIsSignedIn } from '../store/selectors/authSelectors';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 
@@ -31,9 +30,12 @@ const HomeLayout = () => {
 
 
   const [isCreating, setIsCreating] = useState(false);
+  const [isShared, setIsShared] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
   const showIntro = useSelector((state: RootState) => state.ui.showIntro); // Read intro state from Redux
+  const isSignedIn = useSelector(selectIsSignedIn); // Read intro state from Redux
+
 
   const streaks = useSelector(selectAllLocalStreaks); 
 
@@ -42,11 +44,8 @@ const HomeLayout = () => {
 
   // for testing
   // React.useEffect(() => {
-
   //   dispatch(resetIntro())
-    
   // }, []);
-
 
 
   React.useEffect(() => {
@@ -78,7 +77,7 @@ const HomeLayout = () => {
       toValue: SCREEN_HEIGHT,
       duration: 300,
       easing: Easing.in(Easing.ease),
-      useNativeDriver: true,
+      useNativeDriver: true ,
     }).start(() => {
       setIsCreating(false);
       setInputValue('');
@@ -144,8 +143,9 @@ const HomeLayout = () => {
             {/* Header: Title and Close Button */}
             <View style={styles.headerRow}>
               <Text style={styles.overlayTitle}>Create a New Streak</Text>
+
               <Pressable onPress={closeCreateOverlay}>
-                <Ionicons name="close" size={36} color="#333" />
+          <Ionicons name="close" size={36} color="#333" />
               </Pressable>
             </View>
 
@@ -165,12 +165,43 @@ const HomeLayout = () => {
             {/* Character counter */}
             <Text style={styles.charCount}>{inputValue.length}/50</Text>
 
+            {/* Shared Streak Section */}
+            {!isSignedIn ? (
+              <Text>Sign in via settings to create shared streaks.</Text>
+            ) : (
+              <>
+            <Pressable style={styles.toggleButton} onPress={() => setIsShared(!isShared)}>
+            <Text style={styles.toggleButtonText}>
+            
+              {isShared ? 'Shared Streak Enabled' : 'Enable Shared Streak'}
+            </Text>
+          </Pressable>
+
+          {isShared && (
+            <>
+              <TextInput
+                style={styles.minimalInput}
+                placeholder="Enter collaborator email"
+                placeholderTextColor="#aaa"
+
+              />
+              <TextInput
+                style={styles.minimalInput}
+                placeholder="Enter streak description"
+                placeholderTextColor="#aaa"
+
+              />
+            </>
+          )}
+              </>
+            )}
+
             {/* Checkmark button */}
             <Pressable
               onPress={handleAddItem}
               style={({ pressed }) => [
-                styles.enterButton,
-                { opacity: pressed ? 0.8 : 1 },
+          styles.enterButton,
+          { opacity: pressed ? 0.8 : 1 },
               ]}
             >
               <Ionicons name="checkmark-sharp" size={24} color="white" />
@@ -286,4 +317,33 @@ const styles = StyleSheet.create({
     marginTop: 12,
     // usw.
   },
+
+
+  toggleButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+
+
+
+  sharedInput: {
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 8,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  toggleButtonText: {
+    color: '#0099ff',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 10,
+  },
 });
+

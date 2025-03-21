@@ -3,12 +3,11 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
+import Constants from 'expo-constants';
 
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -31,6 +30,10 @@ export const googleProvider = new GoogleAuthProvider();
 
 // Firestore initialisieren und mit dem Emulator verbinden
 connectFirestoreEmulator(db, "localhost", 8080);
+
+
+//connectAuthEmulator(auth, `http://${origin}:9099`);
+
 
 // Auth initialisieren und mit dem Emulator verbinden
 connectAuthEmulator(auth, "http://localhost:9099");
