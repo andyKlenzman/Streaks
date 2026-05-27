@@ -1,10 +1,10 @@
-# Daily Do Do
-Daily Doo Doo is a super simple accountability tool.
+# Streaks
 
-It works just like streaks on snapchat. You and a friend build a streak together. If one person does not do it in time, it fails.
+A shared habit tracker built around the streak mechanic from Snapchat. You and a partner commit to doing something daily — if either of you misses a day, the streak resets.
 
-Built on simplicity, focusing on the main functionality of facilitating these streaks between users for themselves and for the local users.
-For developers
-This repo contains the frontend and backend
-- UUID: Unique User ID. Used to pair streaks with their creator.
+Stripped down on purpose: no feed, no social layer, just the streak. Built with TypeScript and React Native. Frontend and backend live in the same repo.
 
+```bash
+npm install
+npx expo start
+```
